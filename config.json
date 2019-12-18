@@ -1,0 +1,101 @@
+{
+    "discord": {
+        "token": "yolo-token-here",
+        "adminRole": "Administrator",
+        "defaultGuild": "Europe Raiding Central",
+        "playing": "Pepsiman's Revenge"
+    },
+    "role": {
+        "casters": "Casters",
+        "caster": "Casters",
+        "mage": "Casters",
+        "smn": "Casters",
+        "blm": "Casters",
+        "rdm": "Casters",
+        "ranged dps": "Ranged DPS",
+        "ranged": "Ranged DPS",
+        "rangeds": "Ranged DPS",
+        "mch": "Ranged DPS",
+        "brd": "Ranged DPS",
+        "dnc": "Ranged DPS",
+        "melee dps": "Melee DPS",
+        "melee": "Melee DPS",
+        "melees": "Melee DPS",
+        "mnk": "Melee DPS",
+        "nin": "Melee DPS",
+        "sam": "Melee DPS",
+        "drg": "Melee DPS",
+        "healers": "Healers",
+        "healer": "Healers",
+        "whm": "Healers",
+        "sch": "Healers",
+        "ast": "Healers",
+        "tanks": "Tanks",
+        "pld": "Tanks",
+        "drk": "Tanks",
+        "war": "Tanks",
+        "tank": "Tanks",
+        "gnb": "Tanks",
+        "guest": "Guests",
+        "chaos": "Chaos",
+        "dc chaos": "Chaos",
+        "datacenter chaos": "Chaos",
+        "data center chaos": "Chaos",
+        "datacenter light": "Light",
+        "data center light": "Light",
+        "light": "Light",
+        "dc light": "Light",
+        "raidlead": "Raid Leaders",
+        "raidleader": "Raid Leaders",
+        "rl": "Raid Leaders",
+        "raidleaders": "Raid Leaders",
+        "raid lead": "Raid Leaders"
+
+    },
+    "throttle": {
+        "static_lfm_light": {
+            "maxTokens": 1,
+            "tokenInterval": 79200
+        },
+        "player_lfg_light": {
+            "maxTokens": 1,
+            "tokenInterval": 79200
+        },
+        "static_lfm_chaos": {
+            "maxTokens": 1,
+            "tokenInterval": 79200
+        },
+        "player_lfg_chaos": {
+            "maxTokens": 1,
+            "tokenInterval": 79200
+        }
+    },
+    "monitor": {
+        "output": "chatlog",
+        "events": [
+            "message", "messageDelete", "messageUpdate",
+            "guildMemberAdd", "guildMemberRemove"
+        ]
+    },
+    "welcome": {
+       "message": "Welcome message goes here"
+    },
+
+    "purge": {
+        "party_finder_chaos": "0 4 * * *",
+        "party_finder_light": "0 4 * * *"
+    },
+
+    "accuracy": {
+
+    },
+
+    "help": {
+
+    },
+
+    "clear": {
+
+    },
+    "commandPrefix": "."
+}
