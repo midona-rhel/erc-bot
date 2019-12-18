@@ -1,6 +1,11 @@
 package main
 
 import (
+	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -11,5 +16,17 @@ type Bot struct {
 
 func main() {
 	config := readconfig()
-	discordgo.New("Bot" + config.Discord.Token)
+	d, err := discordgo.New("Bot " + config.Discord.Token)
+	if err != nil {
+		panic(err)
+	}
+	if err = d.Open(); err != nil {
+		panic(err)
+	}
+
+	// Wait here until CTRL-C or other term signal is received.
+	fmt.Println("ERC-BOT is now running.  Press CTRL-C to exit.")
+	sc := make(chan os.Signal, 1)
+	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
+	<-sc
 }
