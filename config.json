@@ -40,22 +40,22 @@
   "throttle": [
     {
       "channelID": "static_lfm_light",
-      "maxTokens": 1,
+      "maxDebt": 1,
       "tokenInterval": 79200
     },
     {
       "channelID": "player_lfg_light",
-        "maxTokens": 1,
-        "tokenInterval": 79200
+      "maxDebt": 1,
+      "tokenInterval": 79200
     },
     {
       "channelID": "static_lfm_chaos",
-      "maxTokens": 1,
+      "maxDebt": 1,
       "tokenInterval": 79200
     },
     {
       "channelID": "player_lfg_chaos",
-      "maxTokens": 1,
+      "maxDebt": 1,
       "tokenInterval": 79200
     }
   ],
@@ -73,10 +73,10 @@
     "message": "Welcome message goes here"
   },
 
-  "purge": {
-    "party_finder_chaos": "0 4 * * *",
-    "party_finder_light": "0 4 * * *"
-  },
+  "purge": [
+    { "channelID": "party_finder_chaos", "cronExpression": "0 4 * * *" },
+    { "channelID": "party_finder_light", "cronExpression": "0 4 * * *" }
+  ],
 
   "accuracy": {},
 

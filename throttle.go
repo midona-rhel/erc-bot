@@ -7,76 +7,79 @@ import (
 	"time"
 )
 
-func newChannelTimestamps() *ChannelTimestamps {
-	return &ChannelTimestamps{
-		timestamps: map[string]time.Time{},
+func newUserDebtMap() *userDebtMap {
+	return &userDebtMap{
+		tokens: map[string]int{},
 	}
 }
 
-// ChannelTimestamps represents a map of the last accepted post in a channel of a user.
-type ChannelTimestamps struct {
+// userDebtMap represents a map of users and the number of tokens they have remaining.
+type userDebtMap struct {
 	sync.RWMutex
-	timestamps map[string]time.Time
+	tokens map[string]int
 }
 
-func (c *ChannelTimestamps) get(s string) time.Time {
+func (c *userDebtMap) get(s string) int {
 	c.RLock()
 	defer c.RUnlock()
-	return c.timestamps[s]
+	return c.tokens[s]
 }
 
-func (c *ChannelTimestamps) set(s string, t time.Time) {
+func (c *userDebtMap) set(s string, i int) {
 	c.Lock()
-	c.timestamps[s] = t
+	c.tokens[s] = i
 	c.Unlock()
 }
 
-func newUserLastPost() *UserLastPost {
-	return &UserLastPost{
-		users: map[string]*ChannelTimestamps{},
+func newThrottledChannelsMap() *throttledChannelsMap {
+	return &throttledChannelsMap{
+		channels: map[string]*userDebtMap{},
 	}
 }
 
-// UserLastPost represents a map of the users to channeltimestamps
-type UserLastPost struct {
+// throttledChannelsMap represents a map of the channels to user message timestamps.
+type throttledChannelsMap struct {
 	sync.RWMutex
-	users map[string]*ChannelTimestamps
+	channels map[string]*userDebtMap
 }
 
-func (u *UserLastPost) get(s string) *ChannelTimestamps {
+func (u *throttledChannelsMap) get(s string) *userDebtMap {
 	u.RLock()
 	defer u.RUnlock()
-	return u.users[s]
+	return u.channels[s]
 }
 
-func (u *UserLastPost) set(s string, c *ChannelTimestamps) {
+func (u *throttledChannelsMap) set(s string, t *userDebtMap) {
 	u.Lock()
-	u.users[s] = c
+	u.channels[s] = t
 	u.Unlock()
 }
-// TODO: REWRITE WITH TOKENS INVOLVED AND STRUCTURE THE DATA BETTER
 func (b *Bot) handleThrottle(m *discordgo.MessageCreate, s *discordgo.Session) error {
-	// if a channel is throttled.
 	for _, c := range b.config.Throttle {
 		if m.ChannelID == c.ChannelID {
-			// If the user has an existing entry in memory check if the user has a previous post in said channel, if he
-			// does and it is within the probation period delete said post, else initialize said entry.
-			userposts := b.lastposts.get(m.Author.ID)
-			if userposts != nil {
-				t := userposts.get(m.ChannelID)
-				// Checks if the user is posting within the correct time, dumb timecode below, fix later
-				now := time.Now()
-				then := now.Add(time.Duration(-c.TokenInterval) * time.Second)
-				if t.After(then) {
+			debt := b.throttledChannels.get(c.ChannelID)
+			if debt == nil {
+				debt = newUserDebtMap()
+				debt.set(m.Author.ID, 0)
+				go removeDebt(time.Duration(c.TokenInterval)*time.Second, debt, m.Author.ID)
+			} else {
+				i := debt.get(m.Author.ID)
+				if i == c.MaxDebt {
 					return s.ChannelMessageDelete(m.ChannelID, m.ID)
 				}
-				userposts.set(m.ChannelID, time.Now())
-			} else {
-				post := newChannelTimestamps()
-				post.set(m.ChannelID, time.Now())
-				b.lastposts.set(m.Author.ID, post)
+				debt.set(m.Author.ID, i+1)
 			}
 		}
 	}
 	return nil
+}
+
+func removeDebt(t time.Duration, u *userDebtMap, userID string) {
+	for {
+		<-time.After(t)
+		debt := u.get(userID)
+		if debt != 0 {
+			u.set(userID, debt-1)
+		}
+	}
 }

@@ -11,8 +11,8 @@ import (
 
 // Bot represents the runtime instance of the erc-bot.
 type Bot struct {
-	config    *Config
-	lastposts *UserLastPost
+	config            *Config
+	throttledChannels *throttledChannelsMap
 }
 
 func main() {
@@ -22,7 +22,7 @@ func main() {
 		panic(err)
 	}
 	b := new(Bot)
-	b.lastposts = newUserLastPost()
+	b.throttledChannels = newThrottledChannelsMap()
 
 	d.AddHandler(b.handleRoles)
 	d.AddHandler(b.handleThrottle)
