@@ -1,4 +1,4 @@
-module erc-bot
+module main
 
 go 1.13
 
