@@ -30,14 +30,34 @@ type Config struct {
 		DefaultGuild string `json:"defaultGuild"`
 		Playing      string `json:"playing"`
 	} `json:"discord"`
-	Role []struct {
-		RoleID string   `json:"roleID"`
-		Alias  []string `json:"alias"`
+	Role struct {
+		Casters     []string `json:"Casters"`
+		RangedDPS   []string `json:"Ranged DPS"`
+		MeleeDPS    []string `json:"Melee DPS"`
+		Healers     []string `json:"Healers"`
+		Tanks       []string `json:"Tanks"`
+		Guest       []string `json:"Guest"`
+		Chaos       []string `json:"Chaos"`
+		Light       []string `json:"Light"`
+		RaidLeaders []string `json:"Raid Leaders"`
 	} `json:"role"`
-	Throttle []struct {
-		ChannelID     string `json:"channelID"`
-		MaxTokens     int    `json:"maxTokens"`
-		TokenInterval int    `json:"tokenInterval"`
+	Throttle struct {
+		StaticLfmLight struct {
+			MaxTokens     int `json:"maxTokens"`
+			TokenInterval int `json:"tokenInterval"`
+		} `json:"static_lfm_light"`
+		PlayerLfgLight struct {
+			MaxTokens     int `json:"maxTokens"`
+			TokenInterval int `json:"tokenInterval"`
+		} `json:"player_lfg_light"`
+		StaticLfmChaos struct {
+			MaxTokens     int `json:"maxTokens"`
+			TokenInterval int `json:"tokenInterval"`
+		} `json:"static_lfm_chaos"`
+		PlayerLfgChaos struct {
+			MaxTokens     int `json:"maxTokens"`
+			TokenInterval int `json:"tokenInterval"`
+		} `json:"player_lfg_chaos"`
 	} `json:"throttle"`
 	Monitor struct {
 		Output string   `json:"output"`

@@ -11,8 +11,7 @@ import (
 
 // Bot represents the runtime instance of the erc-bot.
 type Bot struct {
-	config    *Config
-	lastposts *UserLastPost
+	config *Config
 }
 
 func main() {
@@ -21,9 +20,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	b := new(Bot)
-	b.lastposts = newUserLastPost()
-
 	if err = d.Open(); err != nil {
 		panic(err)
 	}

@@ -1,64 +1,39 @@
 {
   "discord": {
-    "token": "MjY1OTAyMDg2NDc3MDUzOTUy.Xfp6bg.VF6PnlOC-Zws8Felso31sNBey7M",
+    "token": "yolo-token-here",
     "adminRole": "Administrator",
     "defaultGuild": "Europe Raiding Central",
     "playing": "Pepsiman's Revenge"
   },
-  "role": [
-    {
-      "roleID": "Casters",
-      "alias": ["casters", "caster", "mage", "smn", "blm", "rdm"]
-    },
-    {
-      "roleID": "Ranged DPS",
-      "alias": ["ranged", "rangeds", "mch", "brd", "dnc"]
-    },
-    {
-      "roleID": "Melee DPS",
-      "alias": ["melee", "melees", "mnk", "nin", "sam", "drg"]
-    },
-    { "roleID": "Healers", "alias": ["healer", "whm", "sch", "ast"] },
-    {
-      "roleID": "Tanks",
-      "alias": ["tanks", "pld", "drk", "war", "tank", "gnb"]
-    },
-    { "roleID": "Guest", "alias": ["guests"] },
-    {
-      "roleID": "Chaos",
-      "alias": ["chaos", "datacenter chaos", "data center chaos", "dc chaos"]
-    },
-    {
-      "roleID": "Light",
-      "alias": ["datacenter light", "data center light", "light", "dc light"]
-    },
-    {
-      "roleID": "Raid Leaders",
-      "alias": ["raidlead", "raidleader", "rl", "raidleaders", "raid lead"]
-    }
-  ],
-  "throttle": [
-    {
-      "channelID": "static_lfm_light",
+  "role": {
+    "Casters": ["casters", "caster", "mage", "smn", "blm", "rdm"],
+    "Ranged DPS": ["ranged", "rangeds", "mch", "brd", "dnc"],
+    "Melee DPS": ["melee", "melees", "mnk", "nin", "sam", "drg"],
+    "Healers": ["healer", "whm", "sch", "ast"],
+    "Tanks": ["tanks", "pld", "drk", "war", "tank", "gnb"],
+    "Guest": ["guests"],
+    "Chaos": ["chaos", "datacenter chaos", "data center chaos", "dc chaos"],
+    "Light": ["datacenter light", "data center light", "light", "dc light"],
+    "Raid Leaders": ["raidlead", "raidleader", "rl", "raidleaders", "raid lead"]
+  },
+  "throttle": {
+    "static_lfm_light": {
       "maxTokens": 1,
       "tokenInterval": 79200
     },
-    {
-      "channelID": "player_lfg_light",
-        "maxTokens": 1,
-        "tokenInterval": 79200
-    },
-    {
-      "channelID": "static_lfm_chaos",
+    "player_lfg_light": {
       "maxTokens": 1,
       "tokenInterval": 79200
     },
-    {
-      "channelID": "player_lfg_chaos",
+    "static_lfm_chaos": {
+      "maxTokens": 1,
+      "tokenInterval": 79200
+    },
+    "player_lfg_chaos": {
       "maxTokens": 1,
       "tokenInterval": 79200
     }
-  ],
+  },
   "monitor": {
     "output": "chatlog",
     "events": [
