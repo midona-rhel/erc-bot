@@ -24,6 +24,9 @@ func main() {
 	b := new(Bot)
 	b.lastposts = newUserLastPost()
 
+	d.AddHandler(b.handleRoles)
+	d.AddHandler(b.handleThrottle)
+
 	if err = d.Open(); err != nil {
 		panic(err)
 	}

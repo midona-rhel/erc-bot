@@ -1,12 +1,11 @@
 package main
 
-import "github.com/bwmarrin/discordgo"
+import (
+	"github.com/bwmarrin/discordgo"
 
-import "sync"
-
-import "time"
-
-import "fmt"
+	"sync"
+	"time"
+)
 
 func newChannelTimestamps() *ChannelTimestamps {
 	return &ChannelTimestamps{
@@ -55,8 +54,8 @@ func (u *UserLastPost) set(s string, c *ChannelTimestamps) {
 	u.users[s] = c
 	u.Unlock()
 }
-
-func (b *Bot) handleThrottle(m *discordgo.MessageCreate, s *discordgo.Session) {
+// TODO: REWRITE WITH TOKENS INVOLVED AND STRUCTURE THE DATA BETTER
+func (b *Bot) handleThrottle(m *discordgo.MessageCreate, s *discordgo.Session) error {
 	// if a channel is throttled.
 	for _, c := range b.config.Throttle {
 		if m.ChannelID == c.ChannelID {
@@ -69,19 +68,15 @@ func (b *Bot) handleThrottle(m *discordgo.MessageCreate, s *discordgo.Session) {
 				now := time.Now()
 				then := now.Add(time.Duration(-c.TokenInterval) * time.Second)
 				if t.After(then) {
-					err := s.ChannelMessageDelete(m.ChannelID, m.ID)
-					if err != nil {
-						fmt.Println(err)
-					} else {
-						fmt.Println("Removed user message")
-					}
-					return
+					return s.ChannelMessageDelete(m.ChannelID, m.ID)
 				}
 				userposts.set(m.ChannelID, time.Now())
 			} else {
 				post := newChannelTimestamps()
 				post.set(m.ChannelID, time.Now())
+				b.lastposts.set(m.Author.ID, post)
 			}
 		}
 	}
+	return nil
 }
