@@ -1,85 +1,64 @@
 package main
 
 import (
-	"github.com/bwmarrin/discordgo"
-
 	"sync"
 	"time"
+
+	"github.com/bwmarrin/discordgo"
+	"golang.org/x/sync/semaphore"
 )
 
-func newUserDebtMap() *userDebtMap {
-	return &userDebtMap{
-		tokens: map[string]int{},
+func newThrottledChannelUserTokenMap() *throttledChannelUserTokenMap {
+	return &throttledChannelUserTokenMap{
+		tokens: map[string]*semaphore.Weighted{},
 	}
 }
 
-// userDebtMap represents a map of users and the number of tokens they have remaining.
-type userDebtMap struct {
+// throttledChannelUserTokenMap represents a map of users + throttled channels and the number of tokens they have
+// remaining.
+type throttledChannelUserTokenMap struct {
 	sync.RWMutex
-	tokens map[string]int
+	tokens map[string]*semaphore.Weighted
 }
 
-func (c *userDebtMap) get(s string) int {
+// userCanPost tests if a user is able to post given the max amount of tokens a user has.
+func (c *throttledChannelUserTokenMap) userCanPost(key string, maxTokens int, t time.Duration) bool {
 	c.RLock()
-	defer c.RUnlock()
-	return c.tokens[s]
-}
-
-func (c *userDebtMap) set(s string, i int) {
-	c.Lock()
-	c.tokens[s] = i
-	c.Unlock()
-}
-
-func newThrottledChannelsMap() *throttledChannelsMap {
-	return &throttledChannelsMap{
-		channels: map[string]*userDebtMap{},
+	tokenCount := c.tokens[key]
+	c.RUnlock()
+	if tokenCount == nil {
+		tokenCount = c.initUserPostTokens(key, maxTokens)
 	}
+	value := tokenCount.TryAcquire(1)
+	if value {
+		time.AfterFunc(t, func() {
+			tokenCount.Release(1)
+		})
+	}
+	return value
 }
 
-// throttledChannelsMap represents a map of the channels to user message timestamps.
-type throttledChannelsMap struct {
-	sync.RWMutex
-	channels map[string]*userDebtMap
+// initUserPostTokens adds a new semaphore to the map with the correct value and returns said value.
+func (c *throttledChannelUserTokenMap) initUserPostTokens(key string, maxTokens int) *semaphore.Weighted {
+	c.Lock()
+	defer c.Unlock()
+	tokenCount := c.tokens[key]
+	if tokenCount != nil {
+		return tokenCount
+	}
+	semaphore := semaphore.NewWeighted(int64(maxTokens))
+	c.tokens[key] = semaphore
+	return semaphore
 }
 
-func (u *throttledChannelsMap) get(s string) *userDebtMap {
-	u.RLock()
-	defer u.RUnlock()
-	return u.channels[s]
-}
-
-func (u *throttledChannelsMap) set(s string, t *userDebtMap) {
-	u.Lock()
-	u.channels[s] = t
-	u.Unlock()
-}
 func (b *Bot) handleThrottle(m *discordgo.MessageCreate, s *discordgo.Session) error {
 	for _, c := range b.config.Throttle {
 		if m.ChannelID == c.ChannelID {
-			debt := b.throttledChannels.get(c.ChannelID)
-			if debt == nil {
-				debt = newUserDebtMap()
-				debt.set(m.Author.ID, 0)
-				go removeDebt(time.Duration(c.TokenInterval)*time.Second, debt, m.Author.ID)
-			} else {
-				i := debt.get(m.Author.ID)
-				if i == c.MaxDebt {
-					return s.ChannelMessageDelete(m.ChannelID, m.ID)
-				}
-				debt.set(m.Author.ID, i+1)
+			if b.throttledChannels.userCanPost(m.Author.ID+m.ChannelID, c.MaxTokens, time.Duration(c.TokenInterval)*time.Second) {
+				return nil
 			}
+			return s.ChannelMessageDelete(m.ChannelID, m.ID)
 		}
 	}
 	return nil
-}
-
-func removeDebt(t time.Duration, u *userDebtMap, userID string) {
-	for {
-		<-time.After(t)
-		debt := u.get(userID)
-		if debt != 0 {
-			u.set(userID, debt-1)
-		}
-	}
 }

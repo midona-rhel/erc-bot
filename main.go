@@ -12,25 +12,26 @@ import (
 // Bot represents the runtime instance of the erc-bot.
 type Bot struct {
 	config            *Config
-	throttledChannels *throttledChannelsMap
+	throttledChannels *throttledChannelUserTokenMap
 }
 
 func main() {
 	config := readconfig()
-	d, err := discordgo.New("Bot " + config.Discord.Token)
+	session, err := discordgo.New("Bot " + config.Discord.Token)
 	if err != nil {
 		panic(err)
 	}
-	b := new(Bot)
-	b.throttledChannels = newThrottledChannelsMap()
+	bot := new(Bot)
+	bot.throttledChannels = newThrottledChannelUserTokenMap()
 
-	d.AddHandler(b.handleRoles)
-	d.AddHandler(b.handleThrottle)
+	session.AddHandler(bot.handleRoles)
+	session.AddHandler(bot.handleThrottle)
 
-	if err = d.Open(); err != nil {
+	if err = session.Open(); err != nil {
 		panic(err)
 	}
 
+	bot.purge(session)
 	// Wait here until CTRL-C or other term signal is received.
 	fmt.Println("ERC-BOT is now running.  Press CTRL-C to exit.")
 	sc := make(chan os.Signal, 1)

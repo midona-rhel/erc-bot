@@ -40,22 +40,22 @@
   "throttle": [
     {
       "channelID": "static_lfm_light",
-      "maxDebt": 1,
+      "maxTokens": 1,
       "tokenInterval": 79200
     },
     {
       "channelID": "player_lfg_light",
-      "maxDebt": 1,
+      "maxTokens": 1,
       "tokenInterval": 79200
     },
     {
       "channelID": "static_lfm_chaos",
-      "maxDebt": 1,
+      "maxTokens": 1,
       "tokenInterval": 79200
     },
     {
       "channelID": "player_lfg_chaos",
-      "maxDebt": 1,
+      "maxTokens": 1,
       "tokenInterval": 79200
     }
   ],

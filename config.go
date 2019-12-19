@@ -36,7 +36,7 @@ type Config struct {
 	} `json:"role"`
 	Throttle []struct {
 		ChannelID     string `json:"channelID"`
-		MaxDebt       int    `json:"maxDebt"`
+		MaxTokens     int    `json:"maxTokens"`
 		TokenInterval int    `json:"tokenInterval"`
 	} `json:"throttle"`
 	Monitor struct {
@@ -47,7 +47,7 @@ type Config struct {
 		Message string `json:"message"`
 	} `json:"welcome"`
 	Purge []struct {
-		ServerID       string `json:"serverID"`
+		ChannelID      string `json:"channelID"`
 		CronExpression string `json:"cronExpression"`
 	} `json:"purge"`
 	Accuracy struct {
