@@ -4,13 +4,17 @@ import "github.com/bwmarrin/discordgo"
 
 import "strings"
 
-func (b *Bot) handleRoles(m *discordgo.MessageCreate, s *discordgo.Session) {
+func (b *Bot) handleCommands(s *discordgo.Session, m *discordgo.MessageCreate) {
+	var err error
 	if strings.HasPrefix(m.Content, b.config.CommandPrefix+"iamnot") {
-		log.Error(b.removeRole(m, s))
+		err = b.removeRole(m, s)
 	} else if strings.HasPrefix(m.Content, b.config.CommandPrefix+"iam") {
-		log.Error(b.addRole(m, s))
+		err = b.addRole(m, s)
 	} else if strings.HasPrefix(m.Content, b.config.CommandPrefix+"help") {
-		log.Error(b.help(m, s))
+		err = b.help(m, s)
+	}
+	if err != nil {
+		log.Error(err)
 	}
 }
 

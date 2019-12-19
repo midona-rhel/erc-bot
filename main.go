@@ -18,15 +18,23 @@ type Bot struct {
 func main() {
 	initLog()
 	config := readconfig()
+	initMonitor(config.Monitor.Output)
 	session, err := discordgo.New("Bot " + config.Discord.Token)
 	if err != nil {
 		log.Panic(err)
 	}
 	bot := new(Bot)
+	bot.config = config
 	bot.throttledChannels = newThrottledChannelUserTokenMap()
 
-	session.AddHandler(bot.handleRoles)
+	session.AddHandler(bot.handleCommands)
 	session.AddHandler(bot.handleThrottle)
+
+	session.AddHandler(monitorGuildAdd)
+	session.AddHandler(monitorGuildRemove)
+	session.AddHandler(monitorMessageCreate)
+	session.AddHandler(monitorMessageDelete)
+	session.AddHandler(monitorMessageUpdate)
 
 	if err = session.Open(); err != nil {
 		log.Panic(err)

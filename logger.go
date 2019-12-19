@@ -18,7 +18,6 @@ func initLog() {
 	if err != nil {
 		panic(err)
 	}
-	defer f.Close()
 	log.SetOutput(f)
 	log.AddHook(new(Hook))
 }
@@ -44,10 +43,10 @@ func (h *Hook) Fire(entry *logrus.Entry) (err error) {
 
 func logCommand(m *discordgo.MessageCreate, command string) {
 	log.WithFields(logrus.Fields{
-		"channeldID": m.ChannelID,
-		"userID":     m.Author.ID,
-		"userInput":  m.Content,
 		"command":    command,
+		"userInput":  m.Content,
+		"userID":     m.Author.ID,
+		"channeldID": m.ChannelID,
 	}).Info("Executed command")
 }
 
