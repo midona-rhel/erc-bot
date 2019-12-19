@@ -56,6 +56,7 @@ func (b *Bot) handleThrottle(s *discordgo.Session, m *discordgo.MessageCreate) {
 	for _, c := range b.config.Throttle {
 		if m.ChannelID == c.ChannelID {
 			if b.throttledChannels.userCanPost(m.Author.ID+m.ChannelID, c.MaxTokens, time.Duration(c.TokenInterval)*time.Second) {
+				return
 			}
 			log.WithFields(logrus.Fields{
 				"userID":    m.Author.ID,

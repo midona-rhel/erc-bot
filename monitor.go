@@ -16,53 +16,76 @@ func initMonitor(filename string) {
 	if err != nil {
 		panic(err)
 	}
+	monitor.SetFormatter(&logrus.JSONFormatter{})
 	monitor.SetOutput(f)
 }
 
 func monitorGuildAdd(_ *discordgo.Session, g *discordgo.GuildMemberAdd) {
 	monitor.WithFields(logrus.Fields{
-		"username": g.User.Username,
-		"userID":   g.Member.User.ID,
-		"guildID":  g.Member.GuildID,
+		"userID":  g.Member.User.ID,
+		"guildID": g.Member.GuildID,
 	}).Info("guild member join")
 }
 
 func monitorGuildRemove(_ *discordgo.Session, g *discordgo.GuildMemberRemove) {
 	monitor.WithFields(logrus.Fields{
-		"username": g.User.Username,
-		"userID":   g.Member.User.ID,
-		"guildID":  g.Member.GuildID,
+		"userID":  g.Member.User.ID,
+		"guildID": g.Member.GuildID,
 	}).Info("guild member remove")
 }
 
 func monitorMessageCreate(_ *discordgo.Session, m *discordgo.MessageCreate) {
-	monitor.WithFields(logrus.Fields{
-		"content":   m.Content,
-		"username":  m.Author.Username,
-		"userID":    m.Author.ID,
-		"channelID": m.ChannelID,
-		"guildID":   m.GuildID,
-		"bot":       m.Author.Bot,
-	}).Info("message create")
+	if m.Author == nil {
+		monitor.WithFields(logrus.Fields{
+			"content":   m.Content,
+			"userID":    "bot",
+			"channelID": m.ChannelID,
+			"guildID":   m.GuildID,
+		}).Info("message delete")
+	} else {
+		monitor.WithFields(logrus.Fields{
+			"content":   m.Content,
+			"userID":    m.Author.ID,
+			"channelID": m.ChannelID,
+			"guildID":   m.GuildID,
+		}).Info("message delete")
+	}
 }
 
 func monitorMessageDelete(_ *discordgo.Session, m *discordgo.MessageDelete) {
-	monitor.WithFields(logrus.Fields{
-		"content":   m.Content,
-		"username":  m.Author.Username,
-		"userID":    m.Author.ID,
-		"channelID": m.ChannelID,
-		"guildID":   m.GuildID,
-	}).Info("message delete")
+	if m.Author == nil {
+		monitor.WithFields(logrus.Fields{
+			"content":   m.Content,
+			"userID":    "bot",
+			"channelID": m.ChannelID,
+			"guildID":   m.GuildID,
+		}).Info("message delete")
+	} else {
+		monitor.WithFields(logrus.Fields{
+			"content":   m.Content,
+			"userID":    m.Author.ID,
+			"channelID": m.ChannelID,
+			"guildID":   m.GuildID,
+		}).Info("message delete")
+	}
 }
 
 func monitorMessageUpdate(_ *discordgo.Session, m *discordgo.MessageUpdate) {
-	monitor.WithFields(logrus.Fields{
-		"content":          m.Content,
-		"previous content": m.BeforeUpdate.Content,
-		"username":         m.Author.Username,
-		"userID":           m.Author.ID,
-		"channelID":        m.ChannelID,
-		"guildID":          m.GuildID,
-	}).Info("message update")
+	if m.Author == nil {
+		monitor.WithFields(logrus.Fields{
+			"content":          m.Content,
+			"previous content": m.BeforeUpdate.Content,
+			"userID":           "bot",
+			"channelID":        m.ChannelID,
+			"guildID":          m.GuildID,
+		}).Info("message delete")
+	} else {
+		monitor.WithFields(logrus.Fields{
+			"content":          m.Content,
+			"previous content": m.BeforeUpdate.Content,
+			"userID":           m.Author.ID,
+			"channelID":        m.ChannelID,
+			"guildID":          m.GuildID,
+		}).Info("message delete")
+	}
 }

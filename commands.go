@@ -22,7 +22,7 @@ func (b *Bot) removeRole(m *discordgo.MessageCreate, s *discordgo.Session) {
 		for _, alias := range r.Alias {
 			if strings.Contains(message, alias) {
 				if !userHasRole(r.RoleID, m.Member) {
-					b.respondAndDelete("You do not have the role", m.ChannelID, time.Second*30)
+					b.respondAndDelete("You do not have the role", m.ChannelID, m.ID, time.Second*30)
 					return
 				}
 				err := s.GuildMemberRoleRemove(b.config.Discord.DefaultGuild, m.Author.ID, r.RoleID)
@@ -30,7 +30,8 @@ func (b *Bot) removeRole(m *discordgo.MessageCreate, s *discordgo.Session) {
 					logRemoveRoleError(m.Author.ID, b.config.Discord.DefaultGuild, r.RoleID, err)
 				} else {
 					logCommand(m, "removeRole")
-					b.respondAndDelete("Role removed", m.ChannelID, time.Second*30)
+					b.respondAndDelete("Role removed", m.ChannelID, m.ID, time.Second*30)
+					return
 				}
 			}
 		}
@@ -43,7 +44,7 @@ func (b *Bot) addRole(m *discordgo.MessageCreate, s *discordgo.Session) {
 		for _, alias := range r.Alias {
 			if strings.Contains(message, alias) {
 				if userHasRole(r.RoleID, m.Member) {
-					b.respondAndDelete("You already have the role", m.ChannelID, time.Second*30)
+					b.respondAndDelete("You already have the role", m.ChannelID, m.ID, time.Second*5)
 					return
 				}
 				err := s.GuildMemberRoleAdd(b.config.Discord.DefaultGuild, m.Author.ID, r.RoleID)
@@ -51,17 +52,17 @@ func (b *Bot) addRole(m *discordgo.MessageCreate, s *discordgo.Session) {
 					logAddRoleError(m.Author.ID, b.config.Discord.DefaultGuild, r.RoleID, err)
 				} else {
 					logCommand(m, "addRole")
-					b.respondAndDelete("Role added", m.ChannelID, time.Second*30)
+					b.respondAndDelete("Role added", m.ChannelID, m.ID, time.Second*5)
+					return
 				}
 			}
 		}
 	}
 }
 
-func (b *Bot) help(m *discordgo.MessageCreate, s *discordgo.Session) error {
+func (b *Bot) help(m *discordgo.MessageCreate, s *discordgo.Session) {
 	logCommand(m, "help")
-	_, err := s.ChannelMessage(m.ChannelID, b.config.Help)
-	return err
+	b.respondAndDelete(b.config.Help, m.ChannelID, m.ID, time.Hour)
 }
 
 func userHasRole(roleID string, member *discordgo.Member) bool {

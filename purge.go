@@ -9,9 +9,9 @@ import (
 )
 
 func (b *Bot) purge(s *discordgo.Session) {
-	cron := cron.New()
 	for _, c := range b.config.Purge {
-		cron.AddFunc(c.CronExpression, func() {
+		cr := cron.New()
+		cr.AddFunc(c.CronExpression, func() {
 			ms, err := s.ChannelMessages(c.ChannelID, 100, "", "", "")
 			if err != nil {
 				log.WithFields(logrus.Fields{
@@ -26,7 +26,7 @@ func (b *Bot) purge(s *discordgo.Session) {
 				if err != nil {
 					panic(err)
 				}
-				if !t.Add(time.Hour * 24).After(time.Now()) {
+				if !t.Add(time.Second).After(time.Now()) {
 					messagesToDelete = append(messagesToDelete, m.ID)
 				}
 			}
@@ -36,5 +36,7 @@ func (b *Bot) purge(s *discordgo.Session) {
 				logMessagePurging(len(messagesToDelete), c.ChannelID)
 			}
 		})
+		cr.Start()
 	}
+
 }

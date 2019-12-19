@@ -1,3 +1,4 @@
 *.json
 log
 chatlog
+__debug_bin

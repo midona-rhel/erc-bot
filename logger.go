@@ -18,6 +18,7 @@ func initLog() {
 	if err != nil {
 		panic(err)
 	}
+	log.SetFormatter(&logrus.JSONFormatter{})
 	log.SetOutput(f)
 	log.AddHook(new(Hook))
 }
@@ -29,6 +30,7 @@ type Hook struct{}
 func (h *Hook) Levels() []logrus.Level {
 	return []logrus.Level{
 		logrus.ErrorLevel,
+		logrus.InfoLevel,
 	}
 }
 
