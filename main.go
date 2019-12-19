@@ -16,10 +16,11 @@ type Bot struct {
 }
 
 func main() {
+	initLog()
 	config := readconfig()
 	session, err := discordgo.New("Bot " + config.Discord.Token)
 	if err != nil {
-		panic(err)
+		log.Panic(err)
 	}
 	bot := new(Bot)
 	bot.throttledChannels = newThrottledChannelUserTokenMap()
@@ -28,7 +29,7 @@ func main() {
 	session.AddHandler(bot.handleThrottle)
 
 	if err = session.Open(); err != nil {
-		panic(err)
+		log.Panic(err)
 	}
 
 	bot.purge(session)

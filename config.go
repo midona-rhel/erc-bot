@@ -52,8 +52,7 @@ type Config struct {
 	} `json:"purge"`
 	Accuracy struct {
 	} `json:"accuracy"`
-	Help struct {
-	} `json:"help"`
+	Help  string `json:"help"`
 	Clear struct {
 	} `json:"clear"`
 	CommandPrefix string `json:"commandPrefix"`
