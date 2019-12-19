@@ -39,9 +39,9 @@
   ],
   "throttle": [
     {
-      "channelID": "static_lfm_light",
+      "channelID": "656571401456582733",
       "maxTokens": 1,
-      "tokenInterval": 79200
+      "tokenInterval": 15
     },
     {
       "channelID": "player_lfg_light",
@@ -74,8 +74,8 @@
   },
 
   "purge": [
-    { "channelID": "party_finder_chaos", "cronExpression": "0 4 * * *" },
-    { "channelID": "party_finder_light", "cronExpression": "0 4 * * *" }
+    { "channelID": "656571461611552799", "cronExpression": "0 * 0 ? * * *" },
+    { "channelID": "656571425481555969", "cronExpression": "0 * 0 ? * * *" }
   ],
 
   "accuracy": {},
