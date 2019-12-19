@@ -1,10 +1,11 @@
 package main
 
 import (
-	"fmt"
+	"time"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/robfig/cron"
-	"time"
+	"github.com/sirupsen/logrus"
 )
 
 func (b *Bot) purge(s *discordgo.Session) {
@@ -13,7 +14,10 @@ func (b *Bot) purge(s *discordgo.Session) {
 		cron.AddFunc(c.CronExpression, func() {
 			ms, err := s.ChannelMessages(c.ChannelID, 100, "", "", "")
 			if err != nil {
-				fmt.Println(err)
+				log.WithFields(logrus.Fields{
+					"action":    "get channel messages",
+					"channelID": c.ChannelID,
+				}).Error(err)
 			}
 
 			var messagesToDelete []string
@@ -27,7 +31,9 @@ func (b *Bot) purge(s *discordgo.Session) {
 				}
 			}
 			if err = s.ChannelMessagesBulkDelete(c.ChannelID, messagesToDelete); err != nil {
-				fmt.Println(err)
+				logMessagePurgingError(c.ChannelID, err)
+			} else {
+				logMessagePurging(len(messagesToDelete), c.ChannelID)
 			}
 		})
 	}

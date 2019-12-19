@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/bwmarrin/discordgo"
 	"github.com/sirupsen/logrus"
 )
 
@@ -39,4 +40,26 @@ func (h *Hook) Fire(entry *logrus.Entry) (err error) {
 		fmt.Fprintf(os.Stderr, string(line))
 	}
 	return
+}
+
+func logCommand(m *discordgo.MessageCreate, command string) {
+	log.WithFields(logrus.Fields{
+		"channeldID": m.ChannelID,
+		"userID":     m.Author.ID,
+		"userInput":  m.Content,
+		"command":    command,
+	}).Info("Executed command")
+}
+
+func logMessagePurging(amount int, channelID string) {
+	log.WithFields(logrus.Fields{
+		"amount":    amount,
+		"channelID": channelID,
+	}).Info("purged channel")
+}
+func logMessagePurgingError(channelID string, err error) {
+	log.WithFields(logrus.Fields{
+		"action":    "purge channel",
+		"channelID": channelID,
+	}).Error(err)
 }

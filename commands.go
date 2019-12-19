@@ -4,8 +4,6 @@ import "github.com/bwmarrin/discordgo"
 
 import "strings"
 
-import "github.com/sirupsen/logrus"
-
 func (b *Bot) handleRoles(m *discordgo.MessageCreate, s *discordgo.Session) {
 	if strings.HasPrefix(m.Content, b.config.CommandPrefix+"iamnot") {
 		log.Error(b.removeRole(m, s))
@@ -46,13 +44,4 @@ func (b *Bot) help(m *discordgo.MessageCreate, s *discordgo.Session) error {
 	logCommand(m, "help")
 	_, err := s.ChannelMessage(m.ChannelID, b.config.Help)
 	return err
-}
-
-func logCommand(m *discordgo.MessageCreate, command string) {
-	log.WithFields(logrus.Fields{
-		"channeldID": m.ChannelID,
-		"userID":     m.Author.ID,
-		"userInput":  m.Content,
-		"command":    command,
-	}).Info("Executed command")
 }
