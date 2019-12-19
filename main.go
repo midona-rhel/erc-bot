@@ -11,6 +11,7 @@ import (
 
 // Bot represents the runtime instance of the erc-bot.
 type Bot struct {
+	session           *discordgo.Session
 	config            *Config
 	throttledChannels *throttledChannelUserTokenMap
 }
@@ -27,14 +28,17 @@ func main() {
 	bot.config = config
 	bot.throttledChannels = newThrottledChannelUserTokenMap()
 
+	// Add handlers
 	session.AddHandler(bot.handleCommands)
 	session.AddHandler(bot.handleThrottle)
-
+	// Add monitors
 	session.AddHandler(monitorGuildAdd)
 	session.AddHandler(monitorGuildRemove)
 	session.AddHandler(monitorMessageCreate)
 	session.AddHandler(monitorMessageDelete)
 	session.AddHandler(monitorMessageUpdate)
+
+	bot.session = session
 
 	if err = session.Open(); err != nil {
 		log.Panic(err)

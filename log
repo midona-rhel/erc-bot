@@ -11,3 +11,18 @@ time="2019-12-19T20:09:28+01:00" level=error msg="<nil>"
 time="2019-12-19T20:10:49+01:00" level=info msg="Executed command" channeldID=656571378299830283 command=removeRole userID=112675459887595520 userInput=".iamnot caster"
 time="2019-12-19T20:10:54+01:00" level=info msg="Executed command" channeldID=656571378299830283 command=addRole userID=112675459887595520 userInput=".iam caster"
 time="2019-12-19T20:11:28+01:00" level=info msg="Executed command" channeldID=657298892592775168 command=addRole userID=112675459887595520 userInput=".iam caster"
+time="2019-12-19T20:44:20+01:00" level=info msg="executed command" channeldID=656571378299830283 command=removeRole userID=112675459887595520 userInput=".iamnot caster"
+time="2019-12-19T20:44:20+01:00" level=info msg="executed command" channeldID=656571378299830283 command=removeRole userID=112675459887595520 userInput=".iamnot caster"
+time="2019-12-19T20:44:42+01:00" level=info msg="executed command" channeldID=656571378299830283 command=addRole userID=112675459887595520 userInput=.iamcaster
+time="2019-12-19T20:44:42+01:00" level=info msg="executed command" channeldID=656571378299830283 command=addRole userID=112675459887595520 userInput=.iamcaster
+time="2019-12-19T20:44:42+01:00" level=info msg="executed command" channeldID=656571378299830283 command=addRole userID=112675459887595520 userInput=.iamcaster
+time="2019-12-19T20:44:42+01:00" level=info msg="executed command" channeldID=656571378299830283 command=addRole userID=112675459887595520 userInput=.iamcaster
+time="2019-12-19T20:45:21+01:00" level=error msg="Delete https://discordapp.com/api/v6/channels/656571378299830283/messages/657307249269538836: net/http: request canceled (Client.Timeout exceeded while awaiting headers)" channelID=656571378299830283 messageID=657307249269538836
+time="2019-12-19T20:45:53+01:00" level=info msg="executed command" channeldID=656571378299830283 command=removeRole userID=112675459887595520 userInput=.iamnotcaster
+time="2019-12-19T20:45:54+01:00" level=info msg="executed command" channeldID=656571378299830283 command=removeRole userID=112675459887595520 userInput=.iamnotcaster
+time="2019-12-19T20:46:53+01:00" level=info msg="executed command" channeldID=656571378299830283 command=addRole userID=112675459887595520 userInput=.iamcaster
+time="2019-12-19T20:46:53+01:00" level=info msg="executed command" channeldID=656571378299830283 command=addRole userID=112675459887595520 userInput=.iamcaster
+time="2019-12-19T20:48:12+01:00" level=info msg="executed command" channeldID=656571378299830283 command=removeRole userID=112675459887595520 userInput=".iamnot caster"
+time="2019-12-19T20:48:12+01:00" level=info msg="executed command" channeldID=656571378299830283 command=removeRole userID=112675459887595520 userInput=".iamnot caster"
+time="2019-12-19T20:50:23+01:00" level=info msg="executed command" channeldID=656571378299830283 command=addRole userID=112675459887595520 userInput=".iam caster"
+time="2019-12-19T20:50:28+01:00" level=info msg="executed command" channeldID=656571378299830283 command=addRole userID=112675459887595520 userInput=".iam caster"

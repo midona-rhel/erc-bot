@@ -1,39 +1,39 @@
 {
   "discord": {
-    "token": "",
+    "token": "NjU3Mjg3ODg3OTUxNDk1MTY4.XfvBFg.duE-eAtleva-nlPOwzaiVPuhCEc",
     "adminRole": "Administrator",
-    "defaultGuild": "Europe Raiding Central",
+    "defaultGuild": "656570020700356641",
     "playing": "Pepsiman's Revenge"
   },
   "role": [
     {
-      "roleID": "Casters",
+      "roleID": "656571304094466049",
       "alias": ["casters", "caster", "mage", "smn", "blm", "rdm"]
     },
     {
-      "roleID": "Ranged DPS",
+      "roleID": "656571304840790018",
       "alias": ["ranged", "rangeds", "mch", "brd", "dnc"]
     },
     {
-      "roleID": "Melee DPS",
+      "roleID": "656571305595895849",
       "alias": ["melee", "melees", "mnk", "nin", "sam", "drg"]
     },
-    { "roleID": "Healers", "alias": ["healer", "whm", "sch", "ast"] },
+    { "roleID": "656571303217856544", "alias": ["healer", "whm", "sch", "ast"] },
     {
-      "roleID": "Tanks",
+      "roleID": "656571302995427338",
       "alias": ["tanks", "pld", "drk", "war", "tank", "gnb"]
     },
     { "roleID": "Guest", "alias": ["guests"] },
     {
-      "roleID": "Chaos",
+      "roleID": "656571306363322370",
       "alias": ["chaos", "datacenter chaos", "data center chaos", "dc chaos"]
     },
     {
-      "roleID": "Light",
+      "roleID": "656571307231805459",
       "alias": ["datacenter light", "data center light", "light", "dc light"]
     },
     {
-      "roleID": "Raid Leaders",
+      "roleID": "656571302156697610",
       "alias": ["raidlead", "raidleader", "rl", "raidleaders", "raid lead"]
     }
   ],
@@ -80,7 +80,7 @@
 
   "accuracy": {},
 
-  "help": {},
+  "help": "Heeelp",
 
   "clear": {},
   "commandPrefix": "."

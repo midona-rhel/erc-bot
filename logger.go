@@ -47,7 +47,20 @@ func logCommand(m *discordgo.MessageCreate, command string) {
 		"userInput":  m.Content,
 		"userID":     m.Author.ID,
 		"channeldID": m.ChannelID,
-	}).Info("Executed command")
+	}).Info("executed command")
+}
+
+func logMessageSendError(channelID string, err error) {
+	log.WithFields(logrus.Fields{
+		"channelID": channelID,
+	}).Error(err)
+}
+
+func logMessageDeleteError(channelID, messageID string, err error) {
+	log.WithFields(logrus.Fields{
+		"channelID": channelID,
+		"messageID": messageID,
+	}).Error(err)
 }
 
 func logMessagePurging(amount int, channelID string) {
@@ -61,4 +74,20 @@ func logMessagePurgingError(channelID string, err error) {
 		"action":    "purge channel",
 		"channelID": channelID,
 	}).Error(err)
+}
+
+func logRemoveRoleError(userID, guildID, roleID string, err error) {
+	log.WithFields(logrus.Fields{
+		"roleID":  roleID,
+		"userID":  userID,
+		"guildID": guildID,
+	}).Error("failed to remove role:", err)
+}
+
+func logAddRoleError(userID, guildID, roleID string, err error) {
+	log.WithFields(logrus.Fields{
+		"roleID":  roleID,
+		"userID":  userID,
+		"guildID": guildID,
+	}).Error("failed to add role:", err)
 }

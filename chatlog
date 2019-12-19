@@ -11,3 +11,31 @@ time="2019-12-19T20:09:22+01:00" level=info msg="message create" bot=false chann
 time="2019-12-19T20:10:49+01:00" level=info msg="message create" bot=false channelID=656571378299830283 content=".iamnot caster" guildID=656570020700356641 userID=112675459887595520 username=Midona
 time="2019-12-19T20:10:54+01:00" level=info msg="message create" bot=false channelID=656571378299830283 content=".iam caster" guildID=656570020700356641 userID=112675459887595520 username=Midona
 time="2019-12-19T20:11:28+01:00" level=info msg="message create" bot=false channelID=657298892592775168 content=".iam caster" guildID= userID=112675459887595520 username=Midona
+time="2019-12-19T20:44:14+01:00" level=info msg="message create" bot=false channelID=656571378299830283 content=".iam caster" guildID=656570020700356641 userID=112675459887595520 username=Midona
+time="2019-12-19T20:44:15+01:00" level=info msg="message create" bot=true channelID=656571378299830283 content="You already have the role" guildID=656570020700356641 userID=657287887951495168 username="Test ERC"
+time="2019-12-19T20:44:20+01:00" level=info msg="message create" bot=false channelID=656571378299830283 content=".iamnot caster" guildID=656570020700356641 userID=112675459887595520 username=Midona
+time="2019-12-19T20:44:20+01:00" level=info msg="message create" bot=true channelID=656571378299830283 content="Role removed" guildID=656570020700356641 userID=657287887951495168 username="Test ERC"
+time="2019-12-19T20:44:21+01:00" level=info msg="message create" bot=true channelID=656571378299830283 content="Role removed" guildID=656570020700356641 userID=657287887951495168 username="Test ERC"
+time="2019-12-19T20:44:37+01:00" level=info msg="message create" bot=false channelID=656571378299830283 content=".iamnot caster" guildID=656570020700356641 userID=112675459887595520 username=Midona
+time="2019-12-19T20:44:37+01:00" level=info msg="message create" bot=true channelID=656571378299830283 content="You do not have the role" guildID=656570020700356641 userID=657287887951495168 username="Test ERC"
+time="2019-12-19T20:44:42+01:00" level=info msg="message create" bot=false channelID=656571378299830283 content=.iamcaster guildID=656570020700356641 userID=112675459887595520 username=Midona
+time="2019-12-19T20:44:42+01:00" level=info msg="message create" bot=true channelID=656571378299830283 content="Role added" guildID=656570020700356641 userID=657287887951495168 username="Test ERC"
+time="2019-12-19T20:44:43+01:00" level=info msg="message create" bot=true channelID=656571378299830283 content="Role added" guildID=656570020700356641 userID=657287887951495168 username="Test ERC"
+time="2019-12-19T20:45:48+01:00" level=info msg="message create" bot=false channelID=656571378299830283 content=".iam caster" guildID=656570020700356641 userID=112675459887595520 username=Midona
+time="2019-12-19T20:45:48+01:00" level=info msg="message create" bot=true channelID=656571378299830283 content="You already have the role" guildID=656570020700356641 userID=657287887951495168 username="Test ERC"
+time="2019-12-19T20:45:53+01:00" level=info msg="message create" bot=false channelID=656571378299830283 content=.iamnotcaster guildID=656570020700356641 userID=112675459887595520 username=Midona
+time="2019-12-19T20:45:54+01:00" level=info msg="message create" bot=true channelID=656571378299830283 content="Role removed" guildID=656570020700356641 userID=657287887951495168 username="Test ERC"
+time="2019-12-19T20:45:54+01:00" level=info msg="message create" bot=true channelID=656571378299830283 content="Role removed" guildID=656570020700356641 userID=657287887951495168 username="Test ERC"
+time="2019-12-19T20:46:48+01:00" level=info msg="message create" bot=false channelID=656571378299830283 content=.iamnotcaster guildID=656570020700356641 userID=112675459887595520 username=Midona
+time="2019-12-19T20:46:48+01:00" level=info msg="message create" bot=true channelID=656571378299830283 content="You do not have the role" guildID=656570020700356641 userID=657287887951495168 username="Test ERC"
+time="2019-12-19T20:46:53+01:00" level=info msg="message create" bot=false channelID=656571378299830283 content=.iamcaster guildID=656570020700356641 userID=112675459887595520 username=Midona
+time="2019-12-19T20:46:53+01:00" level=info msg="message create" bot=true channelID=656571378299830283 content="Role added" guildID=656570020700356641 userID=657287887951495168 username="Test ERC"
+time="2019-12-19T20:46:54+01:00" level=info msg="message create" bot=true channelID=656571378299830283 content="Role added" guildID=656570020700356641 userID=657287887951495168 username="Test ERC"
+time="2019-12-19T20:47:59+01:00" level=info msg="message create" bot=false channelID=656571378299830283 content=".iam caster" guildID=656570020700356641 userID=112675459887595520 username=Midona
+time="2019-12-19T20:48:03+01:00" level=info msg="message create" bot=true channelID=656571378299830283 content="You already have the role" guildID=656570020700356641 userID=657287887951495168 username="Test ERC"
+time="2019-12-19T20:48:12+01:00" level=info msg="message create" bot=false channelID=656571378299830283 content=".iamnot caster" guildID=656570020700356641 userID=112675459887595520 username=Midona
+time="2019-12-19T20:48:12+01:00" level=info msg="message create" bot=true channelID=656571378299830283 content="Role removed" guildID=656570020700356641 userID=657287887951495168 username="Test ERC"
+time="2019-12-19T20:48:12+01:00" level=info msg="message create" bot=true channelID=656571378299830283 content="Role removed" guildID=656570020700356641 userID=657287887951495168 username="Test ERC"
+time="2019-12-19T20:50:09+01:00" level=info msg="message create" bot=false channelID=656571378299830283 content=".iam caster" guildID=656570020700356641 userID=112675459887595520 username=Midona
+time="2019-12-19T20:50:24+01:00" level=info msg="message create" bot=true channelID=656571378299830283 content="Role added" guildID=656570020700356641 userID=657287887951495168 username="Test ERC"
+time="2019-12-19T20:50:28+01:00" level=info msg="message create" bot=true channelID=656571378299830283 content="Role added" guildID=656570020700356641 userID=657287887951495168 username="Test ERC"
