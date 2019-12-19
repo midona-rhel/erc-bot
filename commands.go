@@ -21,11 +21,17 @@ func (b *Bot) removeRole(m *discordgo.MessageCreate, s *discordgo.Session) {
 	for _, r := range b.config.Role {
 		for _, alias := range r.Alias {
 			if strings.Contains(message, alias) {
-				if !userHasRole(r.RoleID, m.Member) {
+				member, err := b.session.State.Member(b.config.Discord.DefaultGuild, m.Author.ID)
+				if err != nil {
+					log.Error(err)
+					return
+				}
+
+				if !userHasRole(r.RoleID, member.Roles) {
 					b.respondAndDelete("You do not have the role", m.ChannelID, m.ID, time.Second*30)
 					return
 				}
-				err := s.GuildMemberRoleRemove(b.config.Discord.DefaultGuild, m.Author.ID, r.RoleID)
+				err = s.GuildMemberRoleRemove(b.config.Discord.DefaultGuild, m.Author.ID, r.RoleID)
 				if err != nil {
 					logRemoveRoleError(m.Author.ID, b.config.Discord.DefaultGuild, r.RoleID, err)
 				} else {
@@ -43,11 +49,16 @@ func (b *Bot) addRole(m *discordgo.MessageCreate, s *discordgo.Session) {
 	for _, r := range b.config.Role {
 		for _, alias := range r.Alias {
 			if strings.Contains(message, alias) {
-				if userHasRole(r.RoleID, m.Member) {
+				member, err := b.session.State.Member(b.config.Discord.DefaultGuild, m.Author.ID)
+				if err != nil {
+					log.Error(err)
+					return
+				}
+				if userHasRole(r.RoleID, member.Roles) {
 					b.respondAndDelete("You already have the role", m.ChannelID, m.ID, time.Second*5)
 					return
 				}
-				err := s.GuildMemberRoleAdd(b.config.Discord.DefaultGuild, m.Author.ID, r.RoleID)
+				err = s.GuildMemberRoleAdd(b.config.Discord.DefaultGuild, m.Author.ID, r.RoleID)
 				if err != nil {
 					logAddRoleError(m.Author.ID, b.config.Discord.DefaultGuild, r.RoleID, err)
 				} else {
@@ -65,8 +76,8 @@ func (b *Bot) help(m *discordgo.MessageCreate, s *discordgo.Session) {
 	b.respondAndDelete(b.config.Help, m.ChannelID, m.ID, time.Hour)
 }
 
-func userHasRole(roleID string, member *discordgo.Member) bool {
-	for _, r := range member.Roles {
+func userHasRole(roleID string, roles []string) bool {
+	for _, r := range roles {
 		if r == roleID {
 			return true
 		}
