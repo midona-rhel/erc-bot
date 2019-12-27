@@ -7,16 +7,16 @@ import "strings"
 import "time"
 
 func (b *Bot) handleCommands(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if b.validateCommand("iamnot", m) {
+	if b.validCommand("iamnot", m) {
 		b.removeRole(m, s)
-	} else if b.validateCommand("iam", m) {
+	} else if b.validCommand("iam", m) {
 		b.addRole(m, s)
-	} else if b.validateCommand("help", m) {
+	} else if b.validCommand("help", m) {
 		b.help(m, s)
 	}
 }
 
-func (b *Bot) validateCommand(command string, m *discordgo.MessageCreate) bool {
+func (b *Bot) validCommand(command string, m *discordgo.MessageCreate) bool {
 	return strings.HasPrefix(m.Content, b.config.CommandPrefix + command)
 }
 
