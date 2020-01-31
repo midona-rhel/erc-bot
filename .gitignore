@@ -4,6 +4,7 @@
 *.json
 
 ## LOGS
+monitor
 log
 chatlog
 

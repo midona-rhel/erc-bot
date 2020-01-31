@@ -11,12 +11,14 @@ import (
 func (b *Bot) purge(s *discordgo.Session) {
 	for _, c := range b.config.Purge {
 		cr := cron.New()
+		channelID := c.ChannelID
 		cr.AddFunc(c.CronExpression, func() {
-			ms, err := s.ChannelMessages(c.ChannelID, 100, "", "", "")
+			date := time.Now().AddDate(0, 0, -13)
+			ms, err := s.ChannelMessages(channelID, 100, "", "", "")
 			if err != nil {
 				log.WithFields(logrus.Fields{
 					"action":    "get channel messages",
-					"channelID": c.ChannelID,
+					"channelID": channelID,
 				}).Error(err)
 			}
 
@@ -26,14 +28,14 @@ func (b *Bot) purge(s *discordgo.Session) {
 				if err != nil {
 					panic(err)
 				}
-				if !t.Add(time.Second).After(time.Now()) {
+				if !t.Add(time.Second).After(time.Now()) && t.After(date) {
 					messagesToDelete = append(messagesToDelete, m.ID)
 				}
 			}
-			if err = s.ChannelMessagesBulkDelete(c.ChannelID, messagesToDelete); err != nil {
-				logMessagePurgingError(c.ChannelID, err)
+			if err = s.ChannelMessagesBulkDelete(channelID, messagesToDelete); err != nil {
+				b.logMessagePurgingError(channelID, err)
 			} else {
-				logMessagePurging(len(messagesToDelete), c.ChannelID)
+				b.logMessagePurging(len(messagesToDelete), channelID)
 			}
 		})
 		cr.Start()
