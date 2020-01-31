@@ -38,10 +38,11 @@ type Config struct {
 		ChannelID     string `json:"channelID"`
 		MaxTokens     int    `json:"maxTokens"`
 		TokenInterval int    `json:"tokenInterval"`
+		CharLimit     int    `json:"charLimit"`
+		NewlineLimit  int    `json:"newlineLimit"`
 	} `json:"throttle"`
 	Monitor struct {
-		Output string   `json:"output"`
-		Events []string `json:"events"`
+		Output string `json:"output"`
 	} `json:"monitor"`
 	Welcome struct {
 		Message string `json:"message"`

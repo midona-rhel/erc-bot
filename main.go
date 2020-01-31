@@ -19,7 +19,7 @@ type Bot struct {
 func main() {
 	initLog()
 	config := readconfig()
-	initMonitor(config.Monitor.Output)
+	initMonitor()
 	session, err := discordgo.New("Bot " + config.Discord.Token)
 	if err != nil {
 		log.Panic(err)
@@ -32,11 +32,11 @@ func main() {
 	session.AddHandler(bot.handleCommands)
 	session.AddHandler(bot.handleThrottle)
 	// Add monitors
-	session.AddHandler(monitorGuildAdd)
-	session.AddHandler(monitorGuildRemove)
-	session.AddHandler(monitorMessageCreate)
-	session.AddHandler(monitorMessageDelete)
-	session.AddHandler(monitorMessageUpdate)
+	session.AddHandler(bot.monitorGuildAdd)
+	session.AddHandler(bot.monitorGuildRemove)
+	session.AddHandler(bot.monitorMessageCreate)
+	session.AddHandler(bot.monitorMessageDelete)
+	session.AddHandler(bot.monitorMessageUpdate)
 
 	bot.session = session
 

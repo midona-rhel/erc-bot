@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/bwmarrin/discordgo"
@@ -11,8 +12,8 @@ var (
 	monitor = logrus.New()
 )
 
-func initMonitor(filename string) {
-	f, err := os.OpenFile("./"+filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+func initMonitor() {
+	f, err := os.OpenFile("./chatlog", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		panic(err)
 	}
@@ -20,22 +21,43 @@ func initMonitor(filename string) {
 	monitor.SetOutput(f)
 }
 
-func monitorGuildAdd(_ *discordgo.Session, g *discordgo.GuildMemberAdd) {
+func (b *Bot) monitorGuildAdd(s *discordgo.Session, g *discordgo.GuildMemberAdd) {
+	s.ChannelMessageSend(b.config.Monitor.Output, fmt.Sprintf("User %s joined", g.Member.User.Username+"#"+g.Member.User.ID))
 	monitor.WithFields(logrus.Fields{
 		"userID":  g.Member.User.ID,
 		"guildID": g.Member.GuildID,
 	}).Info("guild member join")
 }
 
-func monitorGuildRemove(_ *discordgo.Session, g *discordgo.GuildMemberRemove) {
+func (b *Bot) monitorGuildRemove(s *discordgo.Session, g *discordgo.GuildMemberRemove) {
+	s.ChannelMessageSend(b.config.Monitor.Output, fmt.Sprintf("User %s left", g.Member.User.Username+"#"+g.Member.User.ID))
 	monitor.WithFields(logrus.Fields{
 		"userID":  g.Member.User.ID,
 		"guildID": g.Member.GuildID,
 	}).Info("guild member remove")
 }
 
-func monitorMessageCreate(_ *discordgo.Session, m *discordgo.MessageCreate) {
-	if m.Author == nil {
+func (b *Bot) monitorMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
+	if m.Author == nil || m.Author.Bot {
+		monitor.WithFields(logrus.Fields{
+			"content":   m.Content,
+			"userID":    "bot",
+			"channelID": m.ChannelID,
+			"guildID":   m.GuildID,
+		}).Info("message create")
+	} else {
+		s.ChannelMessageSend(b.config.Monitor.Output, fmt.Sprintf("User %s created message with content: %s", m.Author.Username+"#"+m.Author.ID, m.ContentWithMentionsReplaced()))
+		monitor.WithFields(logrus.Fields{
+			"content":   m.Content,
+			"userID":    m.Author.ID,
+			"channelID": m.ChannelID,
+			"guildID":   m.GuildID,
+		}).Info("message create")
+	}
+}
+
+func (b *Bot) monitorMessageDelete(s *discordgo.Session, m *discordgo.MessageDelete) {
+	if m.Author == nil || m.Author.Bot {
 		monitor.WithFields(logrus.Fields{
 			"content":   m.Content,
 			"userID":    "bot",
@@ -43,6 +65,7 @@ func monitorMessageCreate(_ *discordgo.Session, m *discordgo.MessageCreate) {
 			"guildID":   m.GuildID,
 		}).Info("message delete")
 	} else {
+		s.ChannelMessageSend(b.config.Monitor.Output, fmt.Sprintf("User %s deleted message with content: %s", m.Author.Username+"#"+m.Author.ID, m.ContentWithMentionsReplaced()))
 		monitor.WithFields(logrus.Fields{
 			"content":   m.Content,
 			"userID":    m.Author.ID,
@@ -52,26 +75,8 @@ func monitorMessageCreate(_ *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 }
 
-func monitorMessageDelete(_ *discordgo.Session, m *discordgo.MessageDelete) {
-	if m.Author == nil {
-		monitor.WithFields(logrus.Fields{
-			"content":   m.Content,
-			"userID":    "bot",
-			"channelID": m.ChannelID,
-			"guildID":   m.GuildID,
-		}).Info("message delete")
-	} else {
-		monitor.WithFields(logrus.Fields{
-			"content":   m.Content,
-			"userID":    m.Author.ID,
-			"channelID": m.ChannelID,
-			"guildID":   m.GuildID,
-		}).Info("message delete")
-	}
-}
-
-func monitorMessageUpdate(_ *discordgo.Session, m *discordgo.MessageUpdate) {
-	if m.Author == nil {
+func (b *Bot) monitorMessageUpdate(s *discordgo.Session, m *discordgo.MessageUpdate) {
+	if m.Author == nil || m.Author.Bot {
 		monitor.WithFields(logrus.Fields{
 			"content":          m.Content,
 			"previous content": m.BeforeUpdate.Content,
@@ -80,6 +85,7 @@ func monitorMessageUpdate(_ *discordgo.Session, m *discordgo.MessageUpdate) {
 			"guildID":          m.GuildID,
 		}).Info("message delete")
 	} else {
+		s.ChannelMessageSend(b.config.Monitor.Output, fmt.Sprintf("User %s deleted message with content: %s", m.Author.Username+"#"+m.Author.ID, m.ContentWithMentionsReplaced()))
 		monitor.WithFields(logrus.Fields{
 			"content":          m.Content,
 			"previous content": m.BeforeUpdate.Content,

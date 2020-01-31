@@ -1,4 +1,19 @@
+# EXCLUDE
+
+## CONFIGS
 *.json
+
+## LOGS
+monitor
 log
 chatlog
+
+.idea/
+
+## BINARIES
+main.exe
 __debug_bin
+
+# INCLUDE
+
+!config_example.json

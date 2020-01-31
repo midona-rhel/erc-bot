@@ -1,0 +1,91 @@
+{
+  "discord": {
+    "token": "tokem_goes_here",
+    "adminRole": "Administrator",
+    "defaultGuild": "656570020700356641",
+    "playing": "Pepsiman's Revenge"
+  },
+  "role": [
+    {
+      "roleID": "656571304094466049",
+      "alias": ["casters", "caster", "mage", "smn", "blm", "rdm"]
+    },
+    {
+      "roleID": "656571304840790018",
+      "alias": ["ranged", "rangeds", "mch", "brd", "dnc"]
+    },
+    {
+      "roleID": "656571305595895849",
+      "alias": ["melee", "melees", "mnk", "nin", "sam", "drg"]
+    },
+    {
+      "roleID": "656571303217856544",
+      "alias": ["healer", "whm", "sch", "ast"]
+    },
+    {
+      "roleID": "656571302995427338",
+      "alias": ["tanks", "pld", "drk", "war", "tank", "gnb"]
+    },
+    { "roleID": "Guest", "alias": ["guests"] },
+    {
+      "roleID": "656571306363322370",
+      "alias": ["chaos", "datacenter chaos", "data center chaos", "dc chaos"]
+    },
+    {
+      "roleID": "656571307231805459",
+      "alias": ["datacenter light", "data center light", "light", "dc light"]
+    },
+    {
+      "roleID": "656571302156697610",
+      "alias": ["raidlead", "raidleader", "rl", "raidleaders", "raid lead"]
+    }
+  ],
+  "throttle": [
+    {
+      "channelID": "656571401456582733",
+      "maxTokens": 1,
+      "tokenInterval": 15,
+      "charLimit": 16,
+      "newlineLimit": 3
+    },
+    {
+      "channelID": "player_lfg_light",
+      "maxTokens": 1,
+      "tokenInterval": 79200,
+      "charLimit": 0,
+      "newlineLimit": 0
+    },
+    {
+      "channelID": "static_lfm_chaos",
+      "maxTokens": 1,
+      "tokenInterval": 79200,
+      "charLimit": 0,
+      "newlineLimit": 0
+    },
+    {
+      "channelID": "player_lfg_chaos",
+      "maxTokens": 1,
+      "tokenInterval": 79200,
+      "charLimit": 0,
+      "newlineLimit": 0
+    }
+  ],
+  "monitor": {
+    "output": "656571472705224704"
+  },
+  "welcome": {
+    "message": "Welcome message goes here"
+  },
+
+  "purge": [
+    { "channelID": "656571461611552799", "cronExpression": "0 * * * * *" },
+    { "channelID": "656571425481555969", "cronExpression": "0 * * * * *" }
+  ],
+
+  "accuracy": {},
+
+  "help": "*Add a role*\n`.iam ROLE`\n\n*Remove a role:*\n`.iamnot ROLE`\n(ROLE being job acronym, DRK, SAM, BLM, etc.)\n\n*Add raid leader tag (to post on #clear_screenshots)*\n`.iam RL`\n\n*Add guest tag (to not receive pings anymore)*\n`.iam guest`\n\nPlease note that you still need to remove your previous roles manually.\nIf you've accidentally deleted your message in LFG/LFM channel, please note that the moderation team cannot help you bypass the posting limit. Please post on #party_finder until your limit is lifted.",
+
+  "clear": {},
+  "commandPrefix": "."
+}
