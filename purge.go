@@ -33,6 +33,9 @@ func (b *Bot) purge(s *discordgo.Session) {
 					messagesToDelete = append(messagesToDelete, m.ID)
 				}
 			}
+			if len(messagesToDelete) == 0 {
+				return
+			}
 			if err = s.ChannelMessagesBulkDelete(channelID, messagesToDelete); err != nil {
 				bot.logMessagePurgingError(channelID, err)
 			} else {
