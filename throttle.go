@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/sirupsen/logrus"
 	"golang.org/x/sync/semaphore"
 )
 
@@ -58,18 +57,10 @@ func (b *Bot) handleThrottle(s *discordgo.Session, m *discordgo.MessageCreate) {
 			if b.throttledChannels.userCanPost(m.Author.ID+m.ChannelID, c.MaxTokens, time.Duration(c.TokenInterval)*time.Second) {
 				return
 			}
-			log.WithFields(logrus.Fields{
-				"userID":    m.Author.ID,
-				"channelID": c.ChannelID,
-			}).Info("throttled user")
+			logThrottleUser(m.Author.ID, c.ChannelID)
 			err := s.ChannelMessageDelete(m.ChannelID, m.ID)
 			if err != nil {
-				log.WithFields(logrus.Fields{
-					"userID":    m.Author.ID,
-					"channelID": c.ChannelID,
-					"messageID": m.ID,
-					"action":    "failed to delete user post",
-				}).Error(err)
+				logMessageDeleteError(c.ChannelID, m.ID, err)
 			}
 		}
 	}

@@ -93,3 +93,10 @@ func logAddRoleError(userID, guildID, roleID string, err error) {
 		"guildID": guildID,
 	}).Error("failed to add role:", err)
 }
+
+func logThrottleUser(userID, channelID string) {
+	log.WithFields(logrus.Fields{
+		"userID":    userID,
+		"channelID": channelID,
+	}).Info("throttled user")
+}
