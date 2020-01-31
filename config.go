@@ -49,6 +49,8 @@ type Config struct {
 	Purge []struct {
 		ChannelID      string `json:"channelID"`
 		CronExpression string `json:"cronExpression"`
+		CharLimit      int    `json:"charLimit"`
+		NewlineLimit   int    `json:"newlineLimit"`
 	} `json:"purge"`
 	Accuracy struct {
 	} `json:"accuracy"`
