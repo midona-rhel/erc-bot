@@ -9,6 +9,9 @@ import "time"
 import "fmt"
 
 func (b *Bot) handleCommands(s *discordgo.Session, m *discordgo.MessageCreate) {
+	if m.Author == nil || m.Author.Bot {
+		return
+	}
 	if b.validCommand("iamnot", m) {
 		b.removeRole(m, s)
 	} else if b.validCommand("iam", m) {

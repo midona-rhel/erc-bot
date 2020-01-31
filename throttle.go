@@ -61,9 +61,9 @@ func (b *Bot) handleThrottle(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if m.ChannelID == c.ChannelID {
 			message := ""
 			if c.CharLimit > 0 && c.CharLimit < len(m.Content) {
-				message = fmt.Sprintf("Your message was deleted because it was too long, the limit is %d characters.", c.CharLimit)
+				message = fmt.Sprintf("Your message was deleted because it was too long, the limit is %d characters while your message was %d characters long", c.CharLimit, len(m.Content))
 			} else if c.NewlineLimit > 0 && c.NewlineLimit < strings.Count(m.Content, "\n") {
-				message = fmt.Sprintf("Your message was deleted it had too many newlines, the limit is %d.", c.NewlineLimit)
+				message = fmt.Sprintf("Your message was deleted it had too many newlines, the limit is %d while your message had %d newlines", c.NewlineLimit, strings.Count(m.Content, "\n"))
 			} else if !b.throttledChannels.userCanPost(m.Author.ID+m.ChannelID, c.MaxTokens, time.Duration(c.TokenInterval)*time.Second) {
 				message = "Your message was deleted because you are posting too soon in the channel again."
 			} else {
