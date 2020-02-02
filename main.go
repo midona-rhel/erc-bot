@@ -31,6 +31,7 @@ func main() {
 	// Add handlers
 	session.AddHandler(bot.handleCommands)
 	session.AddHandler(bot.handleThrottle)
+	session.AddHandler(bot.handleWelcomeMessage)
 	// Add monitors
 	session.AddHandler(bot.monitorGuildAdd)
 	session.AddHandler(bot.monitorGuildRemove)

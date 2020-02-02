@@ -57,29 +57,29 @@ func (b *Bot) handleThrottle(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.Bot {
 		return
 	}
+	log.Info(m.Content)
 	for _, c := range b.config.Throttle {
 		if m.ChannelID == c.ChannelID {
 			message := ""
 			if c.CharLimit > 0 && c.CharLimit < len(m.Content) {
-				message = fmt.Sprintf("Your message will be deleted in 15 minutes because it is too long, the limit is %d characters while your message is %d characters long. Editing your message will not change this.", c.CharLimit, len(m.Content))
+				message = buildCharLimitResponse(c.CharLimit, len(m.Content))
 
 			} else if c.NewlineLimit > 0 && c.NewlineLimit < strings.Count(m.Content, "\n") {
-				message = fmt.Sprintf("Your message will be deleted in 15 minutes because it has too many newlines, the limit is %d while your message has %d newlines. Editing your message will not change this.", c.NewlineLimit, strings.Count(m.Content, "\n"))
+				message = buildNewlineLimitResponse(c.NewlineLimit, strings.Count(m.Content, "\n"))
 
 			} else if !b.throttledChannels.userCanPost(m.Author.ID+m.ChannelID, c.MaxTokens, time.Duration(c.TokenInterval)*time.Second) {
 				message = "Your message was deleted because you are posting too soon in the channel again."
+			}
+			if message != "" {
 				err := s.ChannelMessageDelete(m.ChannelID, m.ID)
 				if err != nil {
 					b.logMessageDeleteError(c.ChannelID, m.ID, err)
 				}
-				return
-			} else {
-				return
+				b.pmUser(m.Author.ID, message)
+				b.logThrottleUser(m)
 			}
-
-			b.logThrottleUser(m)
-			b.respondAndDelete(m.Author.Mention()+" "+message, m.ChannelID, m.ID, time.Minute*15)
 		}
+		break
 	}
 }
 
@@ -93,4 +93,14 @@ func (b *Bot) pmUser(userID, content string) {
 	if err != nil {
 		b.logMessageSendError(c.ID, err)
 	}
+}
+
+func buildCharLimitResponse(i, j int) string {
+	return fmt.Sprintf("Your message was deleted because it is too long, the limit is %d characters "+
+		"while your message is %d characters long.", i, j)
+}
+
+func buildNewlineLimitResponse(i, j int) string {
+	return fmt.Sprintf("Your message was deleted because it has too many newlines, the limit is %d "+
+		"while your message has %d newlines.", i, j)
 }
