@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -57,12 +58,18 @@ func (b *Bot) handleThrottle(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.Bot {
 		return
 	}
-	log.Info(m.Content)
+	content, err := m.ContentWithMoreMentionsReplaced(s)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+	regex := regexp.MustCompile("\\<(.*?)\\>")
+	content = string(regex.ReplaceAll([]byte(content), []byte("")))
 	for _, c := range b.config.Throttle {
 		if m.ChannelID == c.ChannelID {
 			message := ""
 			if c.CharLimit > 0 && c.CharLimit < len(m.Content) {
-				message = buildCharLimitResponse(c.CharLimit, len(m.Content))
+				message = buildCharLimitResponse(c.CharLimit, len(content))
 
 			} else if c.NewlineLimit > 0 && c.NewlineLimit < strings.Count(m.Content, "\n") {
 				message = buildNewlineLimitResponse(c.NewlineLimit, strings.Count(m.Content, "\n"))
