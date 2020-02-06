@@ -4,7 +4,7 @@ import "github.com/bwmarrin/discordgo"
 
 import "time"
 
-func (b *Bot) respond(content, channelID string) (*discordgo.Message, error) {
+func (b *Bot) reply(content, channelID string) (*discordgo.Message, error) {
 	m, err := b.session.ChannelMessageSend(channelID, content)
 	if err != nil {
 		b.logMessageSendError(channelID, err)
@@ -12,8 +12,8 @@ func (b *Bot) respond(content, channelID string) (*discordgo.Message, error) {
 	return m, err
 }
 
-func (b *Bot) respondAndDelete(content, channelID, messageID string, t time.Duration) {
-	m, err := b.respond(content, channelID)
+func (b *Bot) replyAndClear(content, channelID, messageID string, t time.Duration) {
+	m, err := b.reply(content, channelID)
 	if err != nil {
 		return
 	}

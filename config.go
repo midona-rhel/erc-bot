@@ -57,4 +57,5 @@ type Config struct {
 	Clear struct {
 	} `json:"clear"`
 	CommandPrefix string `json:"commandPrefix"`
+	WelcomeMessage string `json:"welcomeMessage"`
 }

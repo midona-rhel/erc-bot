@@ -13,7 +13,7 @@ var (
 )
 
 func initMonitor() {
-	f, err := os.OpenFile("./chatlog", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	f, err := os.OpenFile("./chatlog.json", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		panic(err)
 	}
@@ -78,20 +78,18 @@ func (b *Bot) monitorMessageDelete(s *discordgo.Session, m *discordgo.MessageDel
 func (b *Bot) monitorMessageUpdate(s *discordgo.Session, m *discordgo.MessageUpdate) {
 	if m.Author == nil || m.Author.Bot {
 		monitor.WithFields(logrus.Fields{
-			"content":          m.Content,
-			"previous content": m.BeforeUpdate.Content,
-			"userID":           "bot",
-			"channelID":        m.ChannelID,
-			"guildID":          m.GuildID,
+			"content":   m.Content,
+			"userID":    "bot",
+			"channelID": m.ChannelID,
+			"guildID":   m.GuildID,
 		}).Info("message delete")
 	} else {
 		s.ChannelMessageSend(b.config.Monitor.Output, fmt.Sprintf("User %s deleted message with content: %s", m.Author.Username+"#"+m.Author.ID, m.ContentWithMentionsReplaced()))
 		monitor.WithFields(logrus.Fields{
-			"content":          m.Content,
-			"previous content": m.BeforeUpdate.Content,
-			"userID":           m.Author.ID,
-			"channelID":        m.ChannelID,
-			"guildID":          m.GuildID,
+			"content":   m.Content,
+			"userID":    m.Author.ID,
+			"channelID": m.ChannelID,
+			"guildID":   m.GuildID,
 		}).Info("message delete")
 	}
 }

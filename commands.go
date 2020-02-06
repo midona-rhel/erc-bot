@@ -9,6 +9,9 @@ import "time"
 import "fmt"
 
 func (b *Bot) handleCommands(s *discordgo.Session, m *discordgo.MessageCreate) {
+	if m.Author == nil || m.Author.Bot {
+		return
+	}
 	if b.validCommand("iamnot", m) {
 		b.removeRole(m, s)
 	} else if b.validCommand("iam", m) {
@@ -35,7 +38,7 @@ func (b *Bot) removeRole(m *discordgo.MessageCreate, s *discordgo.Session) {
 				}
 
 				if !userHasRole(r.RoleID, member.Roles) {
-					b.respondAndDelete(fmt.Sprintf("You are not in %s", r.Alias[0]), m.ChannelID, m.ID, time.Second*30)
+					b.replyAndClear(fmt.Sprintf("You are not in %s", r.Alias[0]), m.ChannelID, m.ID, time.Second*30)
 					return
 				}
 				err = s.GuildMemberRoleRemove(b.config.Discord.DefaultGuild, m.Author.ID, r.RoleID)
@@ -43,13 +46,13 @@ func (b *Bot) removeRole(m *discordgo.MessageCreate, s *discordgo.Session) {
 					b.logRemoveRoleError(m.Author.ID, b.config.Discord.DefaultGuild, r.RoleID, err)
 				} else {
 					b.logCommand(m, "removeRole")
-					b.respondAndDelete(fmt.Sprintf("You have been removed from %s", r.Alias[0]), m.ChannelID, m.ID, time.Second*30)
+					b.replyAndClear(fmt.Sprintf("You have been removed from %s", r.Alias[0]), m.ChannelID, m.ID, time.Second*30)
 					return
 				}
 			}
 		}
 	}
-	b.respondAndDelete(fmt.Sprintf("Sorry, the role %s does not exist", message), m.ChannelID, m.ID, time.Second*30)
+	b.replyAndClear(fmt.Sprintf("Sorry, the role %s does not exist", message), m.ChannelID, m.ID, time.Second*30)
 }
 
 func (b *Bot) addRole(m *discordgo.MessageCreate, s *discordgo.Session) {
@@ -64,7 +67,7 @@ func (b *Bot) addRole(m *discordgo.MessageCreate, s *discordgo.Session) {
 					return
 				}
 				if userHasRole(r.RoleID, member.Roles) {
-					b.respondAndDelete(fmt.Sprintf("You are already in %s", r.Alias[0]), m.ChannelID, m.ID, time.Second*30)
+					b.replyAndClear(fmt.Sprintf("You are already in %s", r.Alias[0]), m.ChannelID, m.ID, time.Second*30)
 					return
 				}
 				err = s.GuildMemberRoleAdd(b.config.Discord.DefaultGuild, m.Author.ID, r.RoleID)
@@ -72,18 +75,18 @@ func (b *Bot) addRole(m *discordgo.MessageCreate, s *discordgo.Session) {
 					b.logAddRoleError(m.Author.ID, b.config.Discord.DefaultGuild, r.RoleID, err)
 				} else {
 					b.logCommand(m, "addRole")
-					b.respondAndDelete(fmt.Sprintf("You now have caster role %s", r.Alias[0]), m.ChannelID, m.ID, time.Second*30)
+					b.replyAndClear(fmt.Sprintf("You now have caster role %s", r.Alias[0]), m.ChannelID, m.ID, time.Second*30)
 					return
 				}
 			}
 		}
 	}
-	b.respondAndDelete(fmt.Sprintf("Sorry, the role %s does not exist", message), m.ChannelID, m.ID, time.Second*30)
+	b.replyAndClear(fmt.Sprintf("Sorry, the role %s does not exist", message), m.ChannelID, m.ID, time.Second*30)
 }
 
 func (b *Bot) help(m *discordgo.MessageCreate, s *discordgo.Session) {
 	b.logCommand(m, "help")
-	b.respondAndDelete(b.config.Help, m.ChannelID, m.ID, time.Hour)
+	b.replyAndClear(b.config.Help, m.ChannelID, m.ID, time.Hour)
 }
 
 func userHasRole(roleID string, roles []string) bool {

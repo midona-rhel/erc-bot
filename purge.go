@@ -12,6 +12,7 @@ func (b *Bot) purge(s *discordgo.Session) {
 	for _, c := range b.config.Purge {
 		cr := cron.New()
 		channelID := c.ChannelID
+		bot := b
 		cr.AddFunc(c.CronExpression, func() {
 			date := time.Now().AddDate(0, 0, -13)
 			ms, err := s.ChannelMessages(channelID, 100, "", "", "")
@@ -32,10 +33,13 @@ func (b *Bot) purge(s *discordgo.Session) {
 					messagesToDelete = append(messagesToDelete, m.ID)
 				}
 			}
+			if len(messagesToDelete) == 0 {
+				return
+			}
 			if err = s.ChannelMessagesBulkDelete(channelID, messagesToDelete); err != nil {
-				b.logMessagePurgingError(channelID, err)
+				bot.logMessagePurgingError(channelID, err)
 			} else {
-				b.logMessagePurging(len(messagesToDelete), channelID)
+				bot.logMessagePurging(len(messagesToDelete), channelID)
 			}
 		})
 		cr.Start()

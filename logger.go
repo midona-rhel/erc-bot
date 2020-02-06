@@ -14,7 +14,7 @@ var (
 )
 
 func initLog() {
-	f, err := os.OpenFile("./log", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	f, err := os.OpenFile("./log.json", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		panic(err)
 	}
@@ -71,7 +71,11 @@ func (b *Bot) logMessagePurging(amount int, channelID string) {
 		"amount":    amount,
 		"channelID": channelID,
 	}).Info("purged channel")
-	c, _ := b.session.Channel(channelID)
+	c, err := b.session.Channel(channelID)
+	if err != nil {
+		log.Error(err)
+		return
+	}
 	b.session.ChannelMessageSend(b.config.Monitor.Output, fmt.Sprintf("Purged %d messages in channel %s", amount, c.Name+":"+channelID))
 }
 func (b *Bot) logMessagePurgingError(channelID string, err error) {
@@ -105,7 +109,11 @@ func (b *Bot) logThrottleUser(m *discordgo.MessageCreate) {
 		"userID":    m.Author.ID,
 		"channelID": m.ChannelID,
 	}).Info("throttled user")
-	c, _ := b.session.Channel(m.ChannelID)
+	c, err := b.session.Channel(m.ChannelID)
+	if err != nil {
+		log.Error(err)
+		return
+	}
 	b.session.ChannelMessageSend(b.config.Monitor.Output, fmt.Sprintf("Throttled user %s in channel %s", m.Author.Username+"#"+m.Author.ID, c.Name+"."+m.ChannelID))
 }
 
