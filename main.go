@@ -14,6 +14,7 @@ type Bot struct {
 	session           *discordgo.Session
 	config            *Config
 	throttledChannels *throttledChannelUserTokenMap
+	messages          *messageMap
 }
 
 func main() {
@@ -24,6 +25,8 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
+	session.StateEnabled = true
+	session.State = discordgo.NewState()
 	bot := new(Bot)
 	bot.config = config
 	bot.throttledChannels = newThrottledChannelUserTokenMap()

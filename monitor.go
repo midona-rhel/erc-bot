@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/sirupsen/logrus"
@@ -22,7 +23,9 @@ func initMonitor() {
 }
 
 func (b *Bot) monitorGuildAdd(s *discordgo.Session, g *discordgo.GuildMemberAdd) {
-	s.ChannelMessageSend(b.config.Monitor.Output, fmt.Sprintf("User %s joined", g.Member.User.Username+"#"+g.Member.User.ID))
+	t := time.Now()
+	title := fmt.Sprintf("[%d:%d:%d]**New User**", t.Hour(), t.Minute(), t.Second())
+	b.sengLogMessage(title, getUserName(g.User, g.Member), g.User.AvatarURL(""), "")
 	monitor.WithFields(logrus.Fields{
 		"userID":  g.Member.User.ID,
 		"guildID": g.Member.GuildID,
@@ -30,7 +33,9 @@ func (b *Bot) monitorGuildAdd(s *discordgo.Session, g *discordgo.GuildMemberAdd)
 }
 
 func (b *Bot) monitorGuildRemove(s *discordgo.Session, g *discordgo.GuildMemberRemove) {
-	s.ChannelMessageSend(b.config.Monitor.Output, fmt.Sprintf("User %s left", g.Member.User.Username+"#"+g.Member.User.ID))
+	t := time.Now()
+	title := fmt.Sprintf("[%d:%d:%d]**New Left**", t.Hour(), t.Minute(), t.Second())
+	b.sengLogMessage(title, getUserName(g.User, g.Member), g.User.AvatarURL(""), "")
 	monitor.WithFields(logrus.Fields{
 		"userID":  g.Member.User.ID,
 		"guildID": g.Member.GuildID,
@@ -46,7 +51,11 @@ func (b *Bot) monitorMessageCreate(s *discordgo.Session, m *discordgo.MessageCre
 			"guildID":   m.GuildID,
 		}).Info("message create")
 	} else {
-		s.ChannelMessageSend(b.config.Monitor.Output, fmt.Sprintf("User %s created message with content: %s", m.Author.Username+"#"+m.Author.ID, m.ContentWithMentionsReplaced()))
+		t := time.Now()
+		name := getUserName(m.Author, m.Member)
+		content := fmt.Sprintf("[%d:%d:%d]**New Message** %s", t.Hour(), t.Minute(), t.Second(), b.getChannelName(m.ChannelID))
+		description, _ := m.ContentWithMoreMentionsReplaced(s)
+		b.sengLogMessage(name, content, m.Author.AvatarURL("50x50"), description)
 		monitor.WithFields(logrus.Fields{
 			"content":   m.Content,
 			"userID":    m.Author.ID,
@@ -57,22 +66,23 @@ func (b *Bot) monitorMessageCreate(s *discordgo.Session, m *discordgo.MessageCre
 }
 
 func (b *Bot) monitorMessageDelete(s *discordgo.Session, m *discordgo.MessageDelete) {
-	if m.Author == nil || m.Author.Bot {
-		monitor.WithFields(logrus.Fields{
-			"content":   m.Content,
-			"userID":    "bot",
-			"channelID": m.ChannelID,
-			"guildID":   m.GuildID,
-		}).Info("message delete")
-	} else {
-		s.ChannelMessageSend(b.config.Monitor.Output, fmt.Sprintf("User %s deleted message with content: %s", m.Author.Username+"#"+m.Author.ID, m.ContentWithMentionsReplaced()))
-		monitor.WithFields(logrus.Fields{
-			"content":   m.Content,
-			"userID":    m.Author.ID,
-			"channelID": m.ChannelID,
-			"guildID":   m.GuildID,
-		}).Info("message delete")
+	a, err := b.session.GuildAuditLog(m.GuildID, "", "", discordgo.AuditLogActionMessageDelete, 1)
+	if err != nil || len(a.AuditLogEntries) != 1 {
+		return
 	}
+	var audit = a.AuditLogEntries[0]
+	t := time.Now()
+	user, err := s.User(audit.UserID)
+	if err != nil {
+		return
+	}
+	content := fmt.Sprintf("[%d:%d:%d]**Message Deleted** %s", t.Hour(), t.Minute(), t.Second(), b.getChannelName(m.ChannelID))
+	b.sengLogMessage(user.Username, content, user.AvatarURL(""), "Unkown content")
+	monitor.WithFields(logrus.Fields{
+		"content":   m.Content,
+		"channelID": m.ChannelID,
+		"guildID":   m.GuildID,
+	}).Info("message delete")
 }
 
 func (b *Bot) monitorMessageUpdate(s *discordgo.Session, m *discordgo.MessageUpdate) {
@@ -84,7 +94,11 @@ func (b *Bot) monitorMessageUpdate(s *discordgo.Session, m *discordgo.MessageUpd
 			"guildID":   m.GuildID,
 		}).Info("message delete")
 	} else {
-		s.ChannelMessageSend(b.config.Monitor.Output, fmt.Sprintf("User %s deleted message with content: %s", m.Author.Username+"#"+m.Author.ID, m.ContentWithMentionsReplaced()))
+		t := time.Now()
+		name := getUserName(m.Author, m.Member)
+		content := fmt.Sprintf("[%d:%d:%d]**Message Updated** %s", t.Hour(), t.Minute(), t.Second(), b.getChannelName(m.ChannelID))
+		description, _ := m.ContentWithMoreMentionsReplaced(s)
+		b.sengLogMessage(name, content, m.Author.AvatarURL(""), description)
 		monitor.WithFields(logrus.Fields{
 			"content":   m.Content,
 			"userID":    m.Author.ID,
@@ -92,4 +106,42 @@ func (b *Bot) monitorMessageUpdate(s *discordgo.Session, m *discordgo.MessageUpd
 			"guildID":   m.GuildID,
 		}).Info("message delete")
 	}
+
+}
+
+func (b *Bot) sengLogMessage(author, content, icon, field string) {
+	b.session.ChannelMessageSendComplex(b.config.Monitor.Output, &discordgo.MessageSend{
+		Content: content,
+		Embed: &discordgo.MessageEmbed{
+			Author: &discordgo.MessageEmbedAuthor{
+				IconURL: icon,
+				Name:    author,
+			},
+			Description: field,
+		},
+	})
+}
+
+func getUserName(u *discordgo.User, m *discordgo.Member) string {
+	if m == nil {
+		if u == nil {
+			return ""
+		}
+		return u.Username
+	} else if m.Nick != "" {
+		return m.Nick
+	}
+	return u.Username
+}
+
+func (b *Bot) getChannelName(channelID string) string {
+	c, err := b.session.Channel(channelID)
+	if err != nil {
+		log.Error(err)
+		return ""
+	}
+	if c.Name == "" {
+		return "PM"
+	}
+	return c.Mention()
 }
