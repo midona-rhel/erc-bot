@@ -24,7 +24,7 @@ func initMonitor() {
 
 func (b *Bot) monitorGuildAdd(s *discordgo.Session, g *discordgo.GuildMemberAdd) {
 	t := time.Now()
-	title := fmt.Sprintf("[%d:%d:%d]**New User**", t.Hour(), t.Minute(), t.Second())
+	title := fmt.Sprintf("[%d:%d:%d] **New User**", t.Hour(), t.Minute(), t.Second())
 	b.sengLogMessage(title, getUserName(g.User, g.Member), g.User.AvatarURL(""), "")
 	monitor.WithFields(logrus.Fields{
 		"userID":  g.Member.User.ID,
@@ -34,7 +34,7 @@ func (b *Bot) monitorGuildAdd(s *discordgo.Session, g *discordgo.GuildMemberAdd)
 
 func (b *Bot) monitorGuildRemove(s *discordgo.Session, g *discordgo.GuildMemberRemove) {
 	t := time.Now()
-	title := fmt.Sprintf("[%d:%d:%d]**New Left**", t.Hour(), t.Minute(), t.Second())
+	title := fmt.Sprintf("[%d:%d:%d] **New Left**", t.Hour(), t.Minute(), t.Second())
 	b.sengLogMessage(title, getUserName(g.User, g.Member), g.User.AvatarURL(""), "")
 	monitor.WithFields(logrus.Fields{
 		"userID":  g.Member.User.ID,
@@ -43,6 +43,7 @@ func (b *Bot) monitorGuildRemove(s *discordgo.Session, g *discordgo.GuildMemberR
 }
 
 func (b *Bot) monitorMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
+	b.messages.setMessage(m.ID, m)
 	if m.Author == nil || m.Author.Bot {
 		monitor.WithFields(logrus.Fields{
 			"content":   m.Content,
@@ -53,9 +54,9 @@ func (b *Bot) monitorMessageCreate(s *discordgo.Session, m *discordgo.MessageCre
 	} else {
 		t := time.Now()
 		name := getUserName(m.Author, m.Member)
-		content := fmt.Sprintf("[%d:%d:%d]**New Message** %s", t.Hour(), t.Minute(), t.Second(), b.getChannelName(m.ChannelID))
+		content := fmt.Sprintf("[%d:%d:%d] **New Message** %s", t.Hour(), t.Minute(), t.Second(), b.getChannelName(m.ChannelID))
 		description, _ := m.ContentWithMoreMentionsReplaced(s)
-		b.sengLogMessage(name, content, m.Author.AvatarURL("50x50"), description)
+		b.sengLogMessage(name, content, m.Author.AvatarURL(""), description)
 		monitor.WithFields(logrus.Fields{
 			"content":   m.Content,
 			"userID":    m.Author.ID,
@@ -65,19 +66,16 @@ func (b *Bot) monitorMessageCreate(s *discordgo.Session, m *discordgo.MessageCre
 	}
 }
 
-func (b *Bot) monitorMessageDelete(s *discordgo.Session, m *discordgo.MessageDelete) {
-	a, err := b.session.GuildAuditLog(m.GuildID, "", "", discordgo.AuditLogActionMessageDelete, 1)
-	if err != nil || len(a.AuditLogEntries) != 1 {
+func (b *Bot) monitorMessageDelete(s *discordgo.Session, d *discordgo.MessageDelete) {
+	m, ok := b.messages.getMessage(d.Message.ID)
+	if !ok {
 		return
 	}
-	var audit = a.AuditLogEntries[0]
 	t := time.Now()
-	user, err := s.User(audit.UserID)
-	if err != nil {
-		return
-	}
-	content := fmt.Sprintf("[%d:%d:%d]**Message Deleted** %s", t.Hour(), t.Minute(), t.Second(), b.getChannelName(m.ChannelID))
-	b.sengLogMessage(user.Username, content, user.AvatarURL(""), "Unkown content")
+	name := getUserName(m.Author, m.Member)
+	content := fmt.Sprintf("[%d:%d:%d ] **Message Deleted** %s", t.Hour(), t.Minute(), t.Second(), b.getChannelName(m.ChannelID))
+	description, _ := m.ContentWithMoreMentionsReplaced(s)
+	b.sengLogMessage(name, content, m.Author.AvatarURL(""), description)
 	monitor.WithFields(logrus.Fields{
 		"content":   m.Content,
 		"channelID": m.ChannelID,
@@ -96,7 +94,7 @@ func (b *Bot) monitorMessageUpdate(s *discordgo.Session, m *discordgo.MessageUpd
 	} else {
 		t := time.Now()
 		name := getUserName(m.Author, m.Member)
-		content := fmt.Sprintf("[%d:%d:%d]**Message Updated** %s", t.Hour(), t.Minute(), t.Second(), b.getChannelName(m.ChannelID))
+		content := fmt.Sprintf("[%d:%d:%d] **Message Updated** %s", t.Hour(), t.Minute(), t.Second(), b.getChannelName(m.ChannelID))
 		description, _ := m.ContentWithMoreMentionsReplaced(s)
 		b.sengLogMessage(name, content, m.Author.AvatarURL(""), description)
 		monitor.WithFields(logrus.Fields{

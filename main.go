@@ -30,6 +30,9 @@ func main() {
 	bot := new(Bot)
 	bot.config = config
 	bot.throttledChannels = newThrottledChannelUserTokenMap()
+	bot.messages = &messageMap{
+		messages: map[string]discordgo.MessageCreate{},
+	}
 
 	// Add handlers
 	session.AddHandler(bot.handleCommands)
