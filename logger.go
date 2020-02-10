@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/sirupsen/logrus"
@@ -44,13 +45,15 @@ func (h *Hook) Fire(entry *logrus.Entry) (err error) {
 }
 
 func (b *Bot) logCommand(m *discordgo.MessageCreate, command string) {
+	t := time.Now()
+	content := fmt.Sprintf("[%02d:%02d:%02d] **Command executed** %s", t.Hour(), t.Minute(), t.Second(), b.getChannelName(m.ChannelID))
+	b.sendLogMessage("", content, "", command)
 	log.WithFields(logrus.Fields{
 		"command":    command,
 		"userInput":  m.Content,
 		"userID":     m.Author.ID,
 		"channeldID": m.ChannelID,
 	}).Info("executed command")
-	b.session.ChannelMessageSend(b.config.Monitor.Output, fmt.Sprintf("Executed command %s on user %s", command, m.Author.Username+"#"+m.Author.ID))
 }
 
 func (b *Bot) logMessageSendError(channelID string, err error) {

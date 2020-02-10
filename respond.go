@@ -1,8 +1,10 @@
 package main
 
-import "github.com/bwmarrin/discordgo"
+import (
+	"time"
 
-import "time"
+	"github.com/bwmarrin/discordgo"
+)
 
 func (b *Bot) reply(content, channelID string) (*discordgo.Message, error) {
 	m, err := b.session.ChannelMessageSend(channelID, content)
