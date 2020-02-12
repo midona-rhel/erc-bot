@@ -70,23 +70,14 @@
       "newlineLimit": 0
     }
   ],
-  "monitor": {
-    "output": "656571472705224704"
-  },
-  "welcome": {
-    "message": "Welcome message goes here"
-  },
 
   "purge": [
     { "channelID": "656571461611552799", "cronExpression": "0 * * * * *" },
     { "channelID": "656571425481555969", "cronExpression": "0 * * * * *" }
   ],
 
-  "accuracy": {},
-
   "help": "*Add a role*\n`.iam ROLE`\n\n*Remove a role:*\n`.iamnot ROLE`\n(ROLE being job acronym, DRK, SAM, BLM, etc.)\n\n*Add raid leader tag (to post on #clear_screenshots)*\n`.iam RL`\n\n*Add guest tag (to not receive pings anymore)*\n`.iam guest`\n\nPlease note that you still need to remove your previous roles manually.\nIf you've accidentally deleted your message in LFG/LFM channel, please note that the moderation team cannot help you bypass the posting limit. Please post on #party_finder until your limit is lifted.",
 
-  "clear": {},
   "commandPrefix": ".",
   "welcomeMessage": "***PLEASE READ THE FOLLOWING!***\r\n \r\nHello :NAME:! I am the Europe Raiding Central Bot. Please make sure to read the rules in #announcements before posting.\r\n \r\nIn order to identify yourself and post on our channels, you need to assign yourself a job role and a datacenter role. Please reply to this private message with one of the following commands based on your primary role in FFXIV (exactly as written below):\r\n \r\n```\r\n.iam PLD\r\n.iam WAR\r\n.iam DRK\r\n.iam GNB\r\n.iam WHM\r\n.iam SCH\r\n.iam AST\r\n.iam MCH\r\n.iam BRD\r\n.iam DNC\r\n.iam BLM\r\n.iam SMN\r\n.iam RDM\r\n.iam MNK\r\n.iam DRG\r\n.iam NIN\r\n.iam SAM\r\n```\r\n \r\nYou will also need to assign your relevant datacenter in order to see the recruitment categories:\r\n \r\n```\r\n.iam Light\r\n.iam Chaos\r\n```\r\n \r\nTo learn more about adding\/removing roles, type:\r\n`.help`\r\n \r\nDo not hesitate to contact the admins should you have any questions.\r\n \r\nSee you soon!"
 }
