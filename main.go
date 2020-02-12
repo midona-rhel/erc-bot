@@ -1,61 +1,22 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"os/signal"
-	"syscall"
+	"context"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/andersfylling/disgord"
+	"github.com/sirupsen/logrus"
 )
 
-// Bot represents the runtime instance of the erc-bot.
-type Bot struct {
-	session           *discordgo.Session
-	config            *Config
-	throttledChannels *throttledChannelUserTokenMap
-	messages          *messageMap
-}
+var (
+	config     = loadConfig()
+	background = context.Background()
+)
 
 func main() {
-	initLog()
-	config := readconfig()
-	initMonitor()
-	session, err := discordgo.New("Bot " + config.Discord.Token)
-	if err != nil {
-		log.Panic(err)
-	}
-	session.StateEnabled = true
-	session.State = discordgo.NewState()
-	bot := new(Bot)
-	bot.config = config
-	bot.throttledChannels = newThrottledChannelUserTokenMap()
-	bot.messages = &messageMap{
-		messages: map[string]discordgo.MessageCreate{},
-	}
-
-	// Add handlers
-	session.AddHandler(bot.handleCommands)
-	session.AddHandler(bot.handleThrottle)
-	session.AddHandler(bot.handleWelcomeMessage)
-	// Add monitors
-	session.AddHandler(bot.monitorGuildAdd)
-	session.AddHandler(bot.monitorGuildRemove)
-	session.AddHandler(bot.monitorMessageCreate)
-	session.AddHandler(bot.monitorMessageDelete)
-	session.AddHandler(bot.monitorMessageUpdate)
-
-	bot.session = session
-
-	if err = session.Open(); err != nil {
-		log.Panic(err)
-	}
-	bot.session.UpdateStatus(0, bot.config.Discord.Playing)
-
-	bot.purge(session)
-	// Wait here until CTRL-C or other term signal is received.
-	fmt.Println("ERC-BOT is now running.  Press CTRL-C to exit.")
-	sc := make(chan os.Signal, 1)
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
-	<-sc
+	session := disgord.New(disgord.Config{
+		LoadMembersQuietly: true,
+		BotToken:           config.Token,
+		Logger:             new(logrus.Logger),
+	})
+	session.StayConnectedUntilInterrupted(background)
 }
