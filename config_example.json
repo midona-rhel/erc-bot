@@ -1,6 +1,6 @@
 {
   "discord": {
-    "token": "tokem_goes_here",
+    "token": "YOUR SECRET",
     "adminRole": "Administrator",
     "defaultGuild": "656570020700356641",
     "playing": "Pepsiman's Revenge"
@@ -45,22 +45,22 @@
       "channelID": "656571401456582733",
       "maxTokens": 1,
       "tokenInterval": 15,
-      "charLimit": 16,
-      "newlineLimit": 3
+      "charLimit": 600,
+      "newlineLimit": 8
     },
     {
-      "channelID": "player_lfg_light",
+      "channelID": "656571414488285187",
       "maxTokens": 1,
-      "tokenInterval": 79200,
-      "charLimit": 0,
-      "newlineLimit": 0
+      "tokenInterval": 15,
+      "charLimit": 600,
+      "newlineLimit": 8
     },
     {
-      "channelID": "static_lfm_chaos",
+      "channelID": "656571425481555969",
       "maxTokens": 1,
       "tokenInterval": 79200,
-      "charLimit": 0,
-      "newlineLimit": 0
+      "charLimit": 600,
+      "newlineLimit": 8
     },
     {
       "channelID": "player_lfg_chaos",
@@ -70,12 +70,13 @@
       "newlineLimit": 0
     }
   ],
-
+  "monitor": {
+    "output": "656571472705224704"
+  },
   "purge": [
     { "channelID": "656571461611552799", "cronExpression": "0 * * * * *" },
     { "channelID": "656571425481555969", "cronExpression": "0 * * * * *" }
   ],
-
   "help": "*Add a role*\n`.iam ROLE`\n\n*Remove a role:*\n`.iamnot ROLE`\n(ROLE being job acronym, DRK, SAM, BLM, etc.)\n\n*Add raid leader tag (to post on #clear_screenshots)*\n`.iam RL`\n\n*Add guest tag (to not receive pings anymore)*\n`.iam guest`\n\nPlease note that you still need to remove your previous roles manually.\nIf you've accidentally deleted your message in LFG/LFM channel, please note that the moderation team cannot help you bypass the posting limit. Please post on #party_finder until your limit is lifted.",
 
   "commandPrefix": ".",
