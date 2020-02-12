@@ -26,13 +26,14 @@ func loadConfig() Config {
 
 // Config represents the runtime configuration saved as a json.
 type Config struct {
-	Token  string
-	Prefix string
-
-	MessageShortDuration int
-	MessageLongDuration  int
-
-	Strings struct {
-		HelpMessage string
-	}
+	Token                string `json:"token"`
+	GuildID              string `json:"guildID"`
+	MessageShortDuration int    `json:"messageShortDuration"`
+	MessageLongDuration  int    `json:"messageLongDuration"`
+	CommandService       struct {
+		Prefix  string `json:"prefix"`
+		Strings struct {
+			HelpMessage string `json:"helpMessage"`
+		} `json:"strings"`
+	} `json:"commandService"`
 }

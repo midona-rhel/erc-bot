@@ -10,13 +10,14 @@ import (
 var (
 	config     = loadConfig()
 	background = context.Background()
-)
-
-func main() {
-	logger := &Logger{
+	logger     = &Logger{
 		logChannelID: disgord.ParseSnowflakeString("656571472705224704"),
 		logger:       logrus.New(),
 	}
+)
+
+func main() {
+
 	session := disgord.New(disgord.Config{
 		LoadMembersQuietly: true,
 		BotToken:           config.Token,

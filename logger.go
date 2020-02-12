@@ -15,7 +15,7 @@ var (
 	colorBlue   = 0x0000FF
 )
 
-// Logger is the custom logger for erc-bot
+// Logger is the custom logger for the erc-bot
 type Logger struct {
 	logger       *logrus.Logger
 	session      disgord.Session
@@ -24,21 +24,25 @@ type Logger struct {
 	ready        bool
 }
 
+// Debug only logs if debug is enabled
 func (l *Logger) Debug(v ...interface{}) {
-	if l.ready {
-		_, err := l.session.SendMsg(context.Background(), l.logChannelID,
-			disgord.Embed{
-				Title:       "Debug Message",
-				Description: fmt.Sprint(v...),
-				Color:       colorYellow,
-			})
-		if err != nil {
-			l.Error(err)
+	if l.debug {
+		if l.ready {
+			_, err := l.session.SendMsg(context.Background(), l.logChannelID,
+				disgord.Embed{
+					Title:       "Debug Message",
+					Description: fmt.Sprint(v...),
+					Color:       colorYellow,
+				})
+			if err != nil {
+				l.Error(err)
+			}
 		}
+		l.logger.Debug(v...)
 	}
-	l.logger.Debug(v...)
 }
 
+// Error logs errors
 func (l *Logger) Error(v ...interface{}) {
 	if l.ready {
 		_, err := l.session.SendMsg(context.Background(), l.logChannelID,
@@ -54,6 +58,7 @@ func (l *Logger) Error(v ...interface{}) {
 	l.logger.Debug(v...)
 }
 
+// Info logs info, like other methods for logger messages are sent to a discord channel when the logger is active.
 func (l *Logger) Info(v ...interface{}) {
 	if l.ready {
 
@@ -70,6 +75,8 @@ func (l *Logger) Info(v ...interface{}) {
 	l.logger.Debug(v...)
 }
 
+// ErrorQuiet logs the error without it being sent to a discord channel, this is called from Error if it fails to send a
+// message to said discord channel
 func (l *Logger) ErrorQuiet(v ...interface{}) {
 	l.Error(v...)
 }
