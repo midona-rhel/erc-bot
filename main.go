@@ -13,10 +13,19 @@ var (
 )
 
 func main() {
+	logger := &Logger{
+		logChannelID: disgord.ParseSnowflakeString("656571472705224704"),
+		logger:       logrus.New(),
+	}
 	session := disgord.New(disgord.Config{
 		LoadMembersQuietly: true,
 		BotToken:           config.Token,
-		Logger:             new(logrus.Logger),
+		Logger:             logger,
+	})
+	logger.session = session
+	session.On(disgord.EvtReady, func() {
+		logger.ready = true
+		logger.Debug("Hello World")
 	})
 	session.StayConnectedUntilInterrupted(background)
 }

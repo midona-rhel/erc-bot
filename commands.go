@@ -32,7 +32,7 @@ func helpCommand(session disgord.Session, evt *disgord.MessageCreate) error {
 	return nil
 }
 
-func cleanup(sessiom disgord.Session, duration int, ms ...*disgord.Message) error {
+func cleanup(sessiom disgord.Session, duration int, ms ...*disgord.Message) {
 
 }
 
