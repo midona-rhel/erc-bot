@@ -1,8 +1,10 @@
 package main
 
-import "github.com/bwmarrin/discordgo"
+import (
+	"strings"
 
-import "strings"
+	"github.com/bwmarrin/discordgo"
+)
 
 func (b *Bot) handleWelcomeMessage(_ *discordgo.Session, g *discordgo.GuildMemberAdd) {
 	s := strings.Replace(b.config.WelcomeMessage, ":NAME:", g.User.Username, 1)

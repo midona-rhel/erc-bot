@@ -58,10 +58,10 @@ func (b *Bot) logCommand(m *discordgo.MessageCreate, command string) {
 
 func (b *Bot) logWelcome(m *discordgo.GuildMemberAdd, outcome string) {
 	log.WithFields(logrus.Fields{
-		"userID": m.Author.ID,
+		"userID": m.User.ID,
 	}).Info("welcome message sent")
 	t := time.Now()
-	name := getUserName(m.Author, m.Member)
+	name := getUserName(m.User, m.Member)
 	content := fmt.Sprintf("[%02d:%02d:%02d] **Welcome Message Sent**", t.Hour(), t.Minute(), t.Second())
 	b.sendLogMessage(name, content, m.User.AvatarURL(""), outcome)
 }
