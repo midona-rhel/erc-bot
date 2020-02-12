@@ -1,4 +1,4 @@
-module main
+module github.com/midona-rhel/erc-bot
 
 go 1.13
 
