@@ -19,7 +19,7 @@ func (m *messageMap) getMessage(key string) (discordgo.MessageCreate, bool) {
 }
 
 func (m *messageMap) setMessage(key string, c *discordgo.MessageCreate) {
-	m.RLock()
+	m.Lock()
 	m.messages[key] = *c
-	m.RUnlock()
+	m.Unlock()
 }

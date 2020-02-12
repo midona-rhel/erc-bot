@@ -50,6 +50,7 @@ func main() {
 	if err = session.Open(); err != nil {
 		log.Panic(err)
 	}
+	bot.session.UpdateStatus(0, bot.config.Discord.Playing)
 
 	bot.purge(session)
 	// Wait here until CTRL-C or other term signal is received.

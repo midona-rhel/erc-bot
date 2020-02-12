@@ -1,12 +1,12 @@
 package main
 
-import "github.com/bwmarrin/discordgo"
+import (
+	"fmt"
+	"strings"
+	"time"
 
-import "strings"
-
-import "time"
-
-import "fmt"
+	"github.com/bwmarrin/discordgo"
+)
 
 func (b *Bot) handleCommands(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author == nil || m.Author.Bot {
@@ -75,7 +75,7 @@ func (b *Bot) addRole(m *discordgo.MessageCreate, s *discordgo.Session) {
 					b.logAddRoleError(m.Author.ID, b.config.Discord.DefaultGuild, r.RoleID, err)
 				} else {
 					b.logCommand(m, "addRole")
-					b.replyAndClear(fmt.Sprintf("You now have caster role %s", r.Alias[0]), m.ChannelID, m.ID, time.Second*30)
+					b.replyAndClear(fmt.Sprintf("You now have the %s role", r.Alias[0]), m.ChannelID, m.ID, time.Second*30)
 					return
 				}
 			}
@@ -86,7 +86,7 @@ func (b *Bot) addRole(m *discordgo.MessageCreate, s *discordgo.Session) {
 
 func (b *Bot) help(m *discordgo.MessageCreate, s *discordgo.Session) {
 	b.logCommand(m, "help")
-	b.replyAndClear(b.config.Help, m.ChannelID, m.ID, time.Hour)
+	b.replyAndClear(b.config.Help, m.ChannelID, m.ID, time.Second*30)
 }
 
 func userHasRole(roleID string, roles []string) bool {

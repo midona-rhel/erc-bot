@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/sirupsen/logrus"
@@ -50,7 +51,19 @@ func (b *Bot) logCommand(m *discordgo.MessageCreate, command string) {
 		"userID":     m.Author.ID,
 		"channeldID": m.ChannelID,
 	}).Info("executed command")
-	b.session.ChannelMessageSend(b.config.Monitor.Output, fmt.Sprintf("Executed command %s on user %s", command, m.Author.Username+"#"+m.Author.ID))
+	t := time.Now()
+	content := fmt.Sprintf("[%02d:%02d:%02d] **Command executed** %s", t.Hour(), t.Minute(), t.Second(), b.getChannelName(m.ChannelID))
+	b.sendLogMessage("", content, "", command)
+}
+
+func (b *Bot) logWelcome(m *discordgo.GuildMemberAdd, outcome string) {
+	log.WithFields(logrus.Fields{
+		"userID": m.Author.ID,
+	}).Info("welcome message sent")
+	t := time.Now()
+	name := getUserName(m.Author, m.Member)
+	content := fmt.Sprintf("[%02d:%02d:%02d] **Welcome Message Sent**", t.Hour(), t.Minute(), t.Second())
+	b.sendLogMessage(name, content, m.User.AvatarURL(""), outcome)
 }
 
 func (b *Bot) logMessageSendError(channelID string, err error) {
@@ -71,12 +84,9 @@ func (b *Bot) logMessagePurging(amount int, channelID string) {
 		"amount":    amount,
 		"channelID": channelID,
 	}).Info("purged channel")
-	c, err := b.session.Channel(channelID)
-	if err != nil {
-		log.Error(err)
-		return
-	}
-	b.session.ChannelMessageSend(b.config.Monitor.Output, fmt.Sprintf("Purged %d messages in channel %s", amount, c.Name+":"+channelID))
+	t := time.Now()
+	content := fmt.Sprintf("[%02d:%02d:%02d] **Channel Purged** %s", t.Hour(), t.Minute(), t.Second(), b.getChannelName(channelID))
+	b.sendLogMessage("", content, "", fmt.Sprintf("%d messages deleted", amount))
 }
 func (b *Bot) logMessagePurgingError(channelID string, err error) {
 	log.WithFields(logrus.Fields{
@@ -109,12 +119,10 @@ func (b *Bot) logThrottleUser(m *discordgo.MessageCreate) {
 		"userID":    m.Author.ID,
 		"channelID": m.ChannelID,
 	}).Info("throttled user")
-	c, err := b.session.Channel(m.ChannelID)
-	if err != nil {
-		log.Error(err)
-		return
-	}
-	b.session.ChannelMessageSend(b.config.Monitor.Output, fmt.Sprintf("Throttled user %s in channel %s", m.Author.Username+"#"+m.Author.ID, c.Name+"."+m.ChannelID))
+	t := time.Now()
+	name := getUserName(m.Author, m.Member)
+	content := fmt.Sprintf("[%02d:%02d:%02d] **Throttled user** %s", t.Hour(), t.Minute(), t.Second(), b.getChannelName(m.ChannelID))
+	b.sendLogMessage(name, content, m.Author.AvatarURL(""), m.Content)
 }
 
 func (b *Bot) logFailedToCreateChannel(userID string, err error) {
