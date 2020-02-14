@@ -45,7 +45,7 @@ func (b *Bot) removeRole(m *discordgo.MessageCreate, s *discordgo.Session) {
 				if err != nil {
 					b.logRemoveRoleError(m.Author.ID, b.config.Discord.DefaultGuild, r.RoleID, err)
 				} else {
-					b.logCommand(m, "removeRole")
+					b.logCommand(m, fmt.Sprintf("Removed role %s", r.Alias[0]))
 					b.replyAndClear(fmt.Sprintf("You have been removed from %s", r.Alias[0]), m.ChannelID, m.ID, time.Second*30)
 					return
 				}
@@ -74,7 +74,7 @@ func (b *Bot) addRole(m *discordgo.MessageCreate, s *discordgo.Session) {
 				if err != nil {
 					b.logAddRoleError(m.Author.ID, b.config.Discord.DefaultGuild, r.RoleID, err)
 				} else {
-					b.logCommand(m, "addRole")
+					b.logCommand(m, fmt.Sprintf("Added role %s", r.Alias[0]))
 					b.replyAndClear(fmt.Sprintf("You now have the %s role", r.Alias[0]), m.ChannelID, m.ID, time.Second*30)
 					return
 				}

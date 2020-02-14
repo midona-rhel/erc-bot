@@ -75,7 +75,7 @@ func (b *Bot) handleThrottle(s *discordgo.Session, m *discordgo.MessageCreate) {
 				message = buildNewlineLimitResponse(c.NewlineLimit, strings.Count(m.Content, "\n"))
 
 			} else if !b.throttledChannels.userCanPost(m.Author.ID+m.ChannelID, c.MaxTokens, time.Duration(c.TokenInterval)*time.Second) {
-				message = "Hello " + getUserName(m.Author, m.Member) + ", this is an automated message. Your latest message on ERC has been deleted due to our 24-hour repost rule. \n\n You will be able to post again in the LFG/LFM channel in " + (time.Duration(c.TokenInterval) * time.Second).String() +". \n\n If you have deleted your message by accident, the admin team cannot help you lift the limit.\n\n If your previous post was removed by a moderator for breaking the rules then you will have to wait for the 24 hours to pass. Please do not repost on another account to get around this. For more information, please read #announcements and the pins in the relevant channels."
+				message = "Hello " + getUserName(m.Author, m.Member) + ", this is an automated message. Your latest message on ERC has been deleted due to our 24-hour repost rule. \n\nYou will be able to post again in the LFG/LFM channel in " + (time.Duration(c.TokenInterval) * time.Second).String() + ". \n\nIf you have deleted your message by accident, the admin team cannot help you lift the limit.\n\nIf your previous post was removed by a moderator for breaking the rules then you will have to wait for the 24 hours to pass. Please do not repost on another account to get around this. For more information, please read #announcements and the pins in the relevant channels."
 			}
 			if message != "" {
 				err := s.ChannelMessageDelete(m.ChannelID, m.ID)
