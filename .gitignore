@@ -13,6 +13,8 @@ chatlog
 ## BINARIES
 main.exe
 __debug_bin
+erc-bot
+tmp
 
 # INCLUDE
 
