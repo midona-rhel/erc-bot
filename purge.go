@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/robfig/cron"
+	"github.com/robfig/cron/v3"
 	"github.com/sirupsen/logrus"
 )
 
