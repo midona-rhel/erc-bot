@@ -24,8 +24,8 @@ func initMonitor() {
 
 func (b *Bot) monitorGuildAdd(s *discordgo.Session, g *discordgo.GuildMemberAdd) {
 	t := time.Now()
-	title := fmt.Sprintf("[%02d:%02d:%02d] **New User**", t.Hour(), t.Minute(), t.Second())
-	b.sendLogMessage(title, getUserName(g.User, g.Member), g.User.AvatarURL(""), "")
+	content := fmt.Sprintf("[%02d:%02d:%02d] **User Joined**", t.Hour(), t.Minute(), t.Second())
+	b.sendLogMessage(getUserName(g.User, g.Member), content, g.User.AvatarURL(""), "")
 	monitor.WithFields(logrus.Fields{
 		"userID":  g.Member.User.ID,
 		"guildID": g.Member.GuildID,
@@ -34,8 +34,8 @@ func (b *Bot) monitorGuildAdd(s *discordgo.Session, g *discordgo.GuildMemberAdd)
 
 func (b *Bot) monitorGuildRemove(s *discordgo.Session, g *discordgo.GuildMemberRemove) {
 	t := time.Now()
-	title := fmt.Sprintf("[%02d:%02d:%02d] **New Left**", t.Hour(), t.Minute(), t.Second())
-	b.sendLogMessage(title, getUserName(g.User, g.Member), g.User.AvatarURL(""), "")
+	content := fmt.Sprintf("[%02d:%02d:%02d] **User Left**", t.Hour(), t.Minute(), t.Second())
+	b.sendLogMessage(getUserName(g.User, g.Member), content, g.User.AvatarURL(""), "")
 	monitor.WithFields(logrus.Fields{
 		"userID":  g.Member.User.ID,
 		"guildID": g.Member.GuildID,
