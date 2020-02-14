@@ -52,12 +52,15 @@ func (b *Bot) monitorMessageCreate(s *discordgo.Session, m *discordgo.MessageCre
 			"guildID":   m.GuildID,
 		}).Info("message create")
 	} else {
-
+		color := 0
+		if len(m.MentionRoles)+len(m.Mentions) > 0 {
+			color = 0x22AA22
+		}
 		t := time.Now()
 		name := getUserName(m.Author, m.Member)
 		content := fmt.Sprintf("[%02d:%02d:%02d] **New Message** %s", t.Hour(), t.Minute(), t.Second(), b.getChannelName(m.ChannelID))
 		description, _ := m.ContentWithMoreMentionsReplaced(s)
-		b.sendLogMessage(name, content, m.Author.AvatarURL(""), description, 0x22AA22)
+		b.sendLogMessage(name, content, m.Author.AvatarURL(""), description, color)
 		monitor.WithFields(logrus.Fields{
 			"content":   m.Content,
 			"userID":    m.Author.ID,
