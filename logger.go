@@ -30,7 +30,7 @@ func (l *Logger) Debug(v ...interface{}) {
 		if l.ready {
 			_, err := l.session.SendMsg(context.Background(), l.logChannelID,
 				disgord.Embed{
-					Title:       "Debug Message",
+					Title:       "Debug",
 					Description: fmt.Sprint(v...),
 					Color:       colorYellow,
 				})
@@ -47,7 +47,7 @@ func (l *Logger) Error(v ...interface{}) {
 	if l.ready {
 		_, err := l.session.SendMsg(context.Background(), l.logChannelID,
 			disgord.Embed{
-				Title:       "Error Message",
+				Title:       "Error",
 				Description: fmt.Sprint(v...),
 				Color:       colorRed,
 			})
@@ -55,7 +55,7 @@ func (l *Logger) Error(v ...interface{}) {
 			l.ErrorQuiet(err)
 		}
 	}
-	l.logger.Debug(v...)
+	l.logger.Error(v...)
 }
 
 // Info logs info, like other methods for logger messages are sent to a discord channel when the logger is active.
@@ -64,7 +64,7 @@ func (l *Logger) Info(v ...interface{}) {
 
 		_, err := l.session.SendMsg(context.Background(), l.logChannelID,
 			disgord.Embed{
-				Title:       "Info Message",
+				Title:       "Info",
 				Description: fmt.Sprint(v...),
 				Color:       colorBlue,
 			})
@@ -72,7 +72,24 @@ func (l *Logger) Info(v ...interface{}) {
 			l.Error(err)
 		}
 	}
-	l.logger.Debug(v...)
+	l.logger.Info(v...)
+}
+
+// Event logs an event performed performed by the bot
+func (l *Logger) Event(v ...interface{}) {
+	if l.ready {
+
+		_, err := l.session.SendMsg(context.Background(), l.logChannelID,
+			disgord.Embed{
+				Title:       "Bot Event",
+				Description: fmt.Sprint(v...),
+				Color:       colorGreen,
+			})
+		if err != nil {
+			l.Error(err)
+		}
+	}
+	l.logger.Info(v...)
 }
 
 // ErrorQuiet logs the error without it being sent to a discord channel, this is called from Error if it fails to send a
