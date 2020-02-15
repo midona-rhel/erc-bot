@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 	"time"
 
@@ -17,6 +18,8 @@ func (b *Bot) handleCommands(s *discordgo.Session, m *discordgo.MessageCreate) {
 	} else if b.validCommand("iam", m) {
 		b.addRole(m, s)
 	} else if b.validCommand("help", m) {
+		b.help(m, s)
+	} else if b.validCommand("check", m) {
 		b.help(m, s)
 	}
 }
@@ -52,7 +55,7 @@ func (b *Bot) removeRole(m *discordgo.MessageCreate, s *discordgo.Session) {
 			}
 		}
 	}
-	b.replyAndClear(fmt.Sprintf("Sorry, the role %s does not exist", message), m.ChannelID, m.ID, time.Second*30)
+	b.replyAndClear(fmt.Sprintf("Sorry, the role %s does not exist", strings.TrimSpace(message)), m.ChannelID, m.ID, time.Second*30)
 }
 
 func (b *Bot) addRole(m *discordgo.MessageCreate, s *discordgo.Session) {
@@ -82,6 +85,77 @@ func (b *Bot) addRole(m *discordgo.MessageCreate, s *discordgo.Session) {
 		}
 	}
 	b.replyAndClear(fmt.Sprintf("Sorry, the role %s does not exist", message), m.ChannelID, m.ID, time.Second*30)
+}
+
+func (b *Bot) check(m *discordgo.MessageCreate, s *discordgo.Session) {
+
+	if m.GuildID != "" {
+		return
+	}
+
+	message := strings.ToLower(m.Content)
+	message = strings.TrimSpace(strings.Replace(message, b.config.CommandPrefix+".check", "", 1))
+
+	content, err := m.ContentWithMoreMentionsReplaced(s)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+	regex := regexp.MustCompile("\\<(.*?)\\>")
+	content = string(regex.ReplaceAll([]byte(content), []byte("")))
+
+	newlines := strings.Count(m.Content, "\n")
+	characters := len(content)
+
+	reply := fmt.Sprintf("Your message has %d characters and %d newlines\n", characters, newlines)
+	for _, c := range b.config.Throttle {
+		ch, err := s.Channel(c.ChannelID)
+		if err != nil {
+			log.Error(fmt.Errorf("Failed to get channel; %w", err))
+			return
+		}
+
+		if c.CharLimit <= characters && c.NewlineLimit <= newlines {
+			reply = reply + constructUnsuccesfulCheckRespose(ch.Name, characters, newlines)
+		} else {
+			reply = reply + constructSuccesfulCheckRespose(ch.Name, characters, newlines)
+		}
+		b.pmUser(m.ID, reply)
+	}
+}
+
+func constructUnsuccesfulCheckRespose(channel string, characters, newlines int) string {
+	reply := fmt.Sprintf("❌Your message does not meet the requirement for channel %s, ", channel)
+	if characters <= 0 {
+		reply = reply + "there is no character limit"
+	} else {
+		reply = reply + fmt.Sprintf("the character limit is %d", characters)
+	}
+
+	if newlines <= 0 {
+		reply = reply + " and there is no newline limit\n"
+	} else {
+		reply = reply + fmt.Sprintf(" and the newline limit is %d\n", newlines)
+	}
+
+	return reply
+}
+
+func constructSuccesfulCheckRespose(channel string, characters, newlines int) string {
+	reply := fmt.Sprintf("✅Your message does meet the requirement for channel %s, ", channel)
+	if characters <= 0 {
+		reply = reply + "there is no character limit"
+	} else {
+		reply = reply + fmt.Sprintf("the character limit is %d", characters)
+	}
+
+	if newlines <= 0 {
+		reply = reply + " and there is no newline limit\n"
+	} else {
+		reply = reply + fmt.Sprintf(" and the newline limit is %d\n", newlines)
+	}
+
+	return reply
 }
 
 func (b *Bot) help(m *discordgo.MessageCreate, s *discordgo.Session) {
