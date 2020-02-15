@@ -92,20 +92,18 @@ func (b *Bot) check(m *discordgo.MessageCreate, s *discordgo.Session) {
 	if m.GuildID != "" {
 		return
 	}
-
-	message := strings.ToLower(m.Content)
+	message, err := m.ContentWithMoreMentionsReplaced(s)
+	message := strings.ToLower(message)
 	message = strings.TrimSpace(strings.Replace(message, b.config.CommandPrefix+".check", "", 1))
-
-	content, err := m.ContentWithMoreMentionsReplaced(s)
 	if err != nil {
 		log.Error(err)
 		return
 	}
 	regex := regexp.MustCompile("\\<(.*?)\\>")
-	content = string(regex.ReplaceAll([]byte(content), []byte("")))
+	message = string(regex.ReplaceAll([]byte(message), []byte("")))
 
-	newlines := strings.Count(m.Content, "\n")
-	characters := len(content)
+	newlines := strings.Count(message, "\n")
+	characters := len(message)
 
 	reply := fmt.Sprintf("Your message has %d characters and %d newlines\n", characters, newlines)
 	for _, c := range b.config.Throttle {
@@ -120,7 +118,7 @@ func (b *Bot) check(m *discordgo.MessageCreate, s *discordgo.Session) {
 		} else {
 			reply = reply + constructSuccesfulCheckRespose(ch.Name, characters, newlines)
 		}
-		b.pmUser(m.ID, reply)
+		b.pmUser(m.Author.ID, reply)
 	}
 }
 
