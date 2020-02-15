@@ -20,7 +20,7 @@ func (b *Bot) handleCommands(s *discordgo.Session, m *discordgo.MessageCreate) {
 	} else if b.validCommand("help", m) {
 		b.help(m, s)
 	} else if b.validCommand("check", m) {
-		b.help(m, s)
+		b.check(m, s)
 	}
 }
 
@@ -92,20 +92,18 @@ func (b *Bot) check(m *discordgo.MessageCreate, s *discordgo.Session) {
 	if m.GuildID != "" {
 		return
 	}
-
-	message := strings.ToLower(m.Content)
-	message = strings.TrimSpace(strings.Replace(message, b.config.CommandPrefix+".check", "", 1))
-
-	content, err := m.ContentWithMoreMentionsReplaced(s)
+	message, err := m.ContentWithMoreMentionsReplaced(s)
+	message = strings.ToLower(message)
+	message = strings.TrimSpace(strings.Replace(message, b.config.CommandPrefix+"check", "", 1))
 	if err != nil {
 		log.Error(err)
 		return
 	}
 	regex := regexp.MustCompile("\\<(.*?)\\>")
-	content = string(regex.ReplaceAll([]byte(content), []byte("")))
+	message = string(regex.ReplaceAll([]byte(message), []byte("")))
 
-	newlines := strings.Count(m.Content, "\n")
-	characters := len(content)
+	newlines := strings.Count(message, "\n")
+	characters := len(message)
 
 	reply := fmt.Sprintf("Your message has %d characters and %d newlines\n", characters, newlines)
 	for _, c := range b.config.Throttle {
@@ -115,13 +113,13 @@ func (b *Bot) check(m *discordgo.MessageCreate, s *discordgo.Session) {
 			return
 		}
 
-		if c.CharLimit <= characters && c.NewlineLimit <= newlines {
-			reply = reply + constructUnsuccesfulCheckRespose(ch.Name, characters, newlines)
+		if (c.CharLimit <= characters && c.CharLimit > 0) || (c.NewlineLimit <= newlines && c.NewlineLimit > 0) {
+			reply = reply + constructUnsuccesfulCheckRespose(ch.Name, c.CharLimit, c.NewlineLimit)
 		} else {
-			reply = reply + constructSuccesfulCheckRespose(ch.Name, characters, newlines)
+			reply = reply + constructSuccesfulCheckRespose(ch.Name, c.CharLimit, c.NewlineLimit)
 		}
-		b.pmUser(m.ID, reply)
 	}
+	b.pmUser(m.Author.ID, reply)
 }
 
 func constructUnsuccesfulCheckRespose(channel string, characters, newlines int) string {
