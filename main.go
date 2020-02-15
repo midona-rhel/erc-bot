@@ -19,7 +19,7 @@ type Bot struct {
 
 func main() {
 	initLog()
-	log.Info("Starting v0.6.0")
+	log.Info("Starting v0.7.3")
 	config := readconfig()
 	initMonitor()
 	session, err := discordgo.New("Bot " + config.Discord.Token)
