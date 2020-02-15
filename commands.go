@@ -114,12 +114,12 @@ func (b *Bot) check(m *discordgo.MessageCreate, s *discordgo.Session) {
 		}
 
 		if c.CharLimit <= characters && c.NewlineLimit <= newlines {
-			reply = reply + constructUnsuccesfulCheckRespose(ch.Name, characters, newlines)
+			reply = reply + constructUnsuccesfulCheckRespose(ch.Name, c.CharLimit, c.NewlineLimit)
 		} else {
-			reply = reply + constructSuccesfulCheckRespose(ch.Name, characters, newlines)
+			reply = reply + constructSuccesfulCheckRespose(ch.Name, c.CharLimit, c.NewlineLimit)
 		}
-		b.pmUser(m.Author.ID, reply)
 	}
+	b.pmUser(m.Author.ID, reply)
 }
 
 func constructUnsuccesfulCheckRespose(channel string, characters, newlines int) string {
