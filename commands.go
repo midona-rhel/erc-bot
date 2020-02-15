@@ -20,7 +20,7 @@ func (b *Bot) handleCommands(s *discordgo.Session, m *discordgo.MessageCreate) {
 	} else if b.validCommand("help", m) {
 		b.help(m, s)
 	} else if b.validCommand("check", m) {
-		b.help(m, s)
+		b.check(m, s)
 	}
 }
 
