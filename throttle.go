@@ -104,10 +104,10 @@ func (b *Bot) pmUser(userID, content string) {
 
 func buildCharLimitResponse(i, j int) string {
 	return fmt.Sprintf("Your message was deleted because it is too long, the limit is %d characters "+
-		"while your message is %d characters long.", i, j)
+		"while your message is %d characters long. \nTo check the length of your ad, reply to this message with `.check [your ad]`", i, j)
 }
 
 func buildNewlineLimitResponse(i, j int) string {
 	return fmt.Sprintf("Your message was deleted because it has too many newlines, the limit is %d "+
-		"while your message has %d newlines.", i, j)
+		"while your message has %d newlines. \nTo check the length of your ad, reply to this message with `.check [your ad]`", i, j)
 }
