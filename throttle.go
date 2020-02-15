@@ -85,8 +85,8 @@ func (b *Bot) handleThrottle(s *discordgo.Session, m *discordgo.MessageCreate) {
 				b.pmUser(m.Author.ID, message)
 				b.logThrottleUser(m)
 			}
+			break
 		}
-		break
 	}
 }
 
