@@ -93,7 +93,7 @@ func (b *Bot) check(m *discordgo.MessageCreate, s *discordgo.Session) {
 		return
 	}
 	message, err := m.ContentWithMoreMentionsReplaced(s)
-	message := strings.ToLower(message)
+	message = strings.ToLower(message)
 	message = strings.TrimSpace(strings.Replace(message, b.config.CommandPrefix+".check", "", 1))
 	if err != nil {
 		log.Error(err)
