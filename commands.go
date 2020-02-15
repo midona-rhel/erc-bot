@@ -118,8 +118,8 @@ func (b *Bot) check(m *discordgo.MessageCreate, s *discordgo.Session) {
 		} else {
 			reply = reply + constructSuccesfulCheckRespose(ch.Name, characters, newlines)
 		}
-		b.pmUser(m.Author.ID, reply)
 	}
+	b.pmUser(m.Author.ID, reply)
 }
 
 func constructUnsuccesfulCheckRespose(channel string, characters, newlines int) string {
