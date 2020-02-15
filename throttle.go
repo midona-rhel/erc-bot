@@ -68,7 +68,7 @@ func (b *Bot) handleThrottle(s *discordgo.Session, m *discordgo.MessageCreate) {
 	for _, c := range b.config.Throttle {
 		if m.ChannelID == c.ChannelID {
 			message := ""
-			if c.CharLimit > 0 && c.CharLimit < len(m.Content) {
+			if c.CharLimit > 0 && c.CharLimit < len(content) {
 				message = buildCharLimitResponse(c.CharLimit, len(content))
 
 			} else if c.NewlineLimit > 0 && c.NewlineLimit < strings.Count(m.Content, "\n") {
