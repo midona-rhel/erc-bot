@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 	"time"
 
@@ -80,6 +81,28 @@ func (b *Bot) addRole(m *discordgo.MessageCreate, s *discordgo.Session) {
 				}
 			}
 		}
+	}
+	b.replyAndClear(fmt.Sprintf("Sorry, the role %s does not exist", message), m.ChannelID, m.ID, time.Second*30)
+}
+
+func (b *Bot) check(m *discordgo.MessageCreate, s *discordgo.Session) {
+	message := strings.ToLower(m.Content)
+	message = strings.TrimSpace(strings.Replace(message, b.config.CommandPrefix+".check", "", 1))
+
+	content, err := m.ContentWithMoreMentionsReplaced(s)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+	regex := regexp.MustCompile("\\<(.*?)\\>")
+	content = string(regex.ReplaceAll([]byte(content), []byte("")))
+
+	newlines := strings.Count(m.Content, "\n")
+	characters := len(content)
+
+	reply := fmt.Sprintf("Your message has %d characters and %d newlines", characters, newlines)
+	for _, c := range b.config.Throttle {
+
 	}
 	b.replyAndClear(fmt.Sprintf("Sorry, the role %s does not exist", message), m.ChannelID, m.ID, time.Second*30)
 }
